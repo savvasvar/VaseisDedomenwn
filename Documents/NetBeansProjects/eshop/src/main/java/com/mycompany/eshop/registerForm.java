@@ -259,6 +259,9 @@ public class registerForm extends javax.swing.JFrame {
 //           } catch (InvalidKeySpecException ex) {
 //               Logger.getLogger(registerForm.class.getName()).log(Level.SEVERE, null, ex);
 //           }
+           mainProgramGUI mainGUI=new mainProgramGUI();
+           mainGUI.setVisible(true);
+           this.dispose();
        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
