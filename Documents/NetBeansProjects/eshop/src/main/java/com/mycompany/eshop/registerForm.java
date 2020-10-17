@@ -5,9 +5,21 @@
  */
 package com.mycompany.eshop;
 
+import static com.mycompany.eshop.login.dbConnection;
+import static com.mycompany.eshop.login.driverClassName;
+import static com.mycompany.eshop.login.passwd;
+import static com.mycompany.eshop.login.rs;
+import static com.mycompany.eshop.login.statement;
+import static com.mycompany.eshop.login.url;
+import static com.mycompany.eshop.login.username;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Optional;
@@ -23,9 +35,24 @@ import javax.crypto.spec.PBEKeySpec;
  * @author Thanasis
  */
 public class registerForm extends javax.swing.JFrame {
+    
+    //Db connnection realated variables
+    static String     driverClassName = "org.postgresql.Driver" ;
+    static String     url = "jdbc:postgresql://dblabs.it.teithe.gr:5432/it154474" ;
+    static Connection dbConnection = null;
+    static String     username = "it154474";
+    static String     passwd = "test123";
+    static Statement statement=null;
+    static ResultSet rs =null;
+    
+    //Db query strings,variables
+    int userExists;
 
+    //Email regular expression patern
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX = 
     Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+    
+    //Validation flags
     boolean pass_match=true;
     
     //variables for hashing
@@ -39,8 +66,11 @@ public class registerForm extends javax.swing.JFrame {
      * Creates new form registerForm
      */
     
-    public registerForm() {
+    public registerForm() throws ClassNotFoundException, SQLException {
         initComponents();
+        Class.forName (driverClassName);
+        dbConnection = DriverManager.getConnection (url, username, passwd);
+        statement = dbConnection.createStatement();
     }
     
     
@@ -125,6 +155,11 @@ public class registerForm extends javax.swing.JFrame {
         jTextField1.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 jTextField1FocusLost(evt);
+            }
+        });
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextField1KeyReleased(evt);
             }
         });
 
@@ -264,10 +299,25 @@ public class registerForm extends javax.swing.JFrame {
            this.dispose();
        }
     }//GEN-LAST:event_jButton1ActionPerformed
-
+    
+    
+    //Checking the database if username already exists and set visible the warning label if it does 
     private void jTextField1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField1FocusLost
        if(!jTextField1.getText().equals("")){
-           System.out.println("YEET");
+           String findIfExists="select count(username) from users where username='"+jTextField1.getText()+"'";
+           System.out.println("Here : "+findIfExists);
+           try {
+               rs=statement.executeQuery(findIfExists);
+               while(rs.next()){
+                   userExists=rs.getInt("count");
+                   System.out.println("count is : "+userExists);
+                }
+           } catch (SQLException ex) {
+               Logger.getLogger(registerForm.class.getName()).log(Level.SEVERE, null, ex);
+           }
+           if(userExists==0){
+               jLabel6.setVisible(true);
+           }
        }
     }//GEN-LAST:event_jTextField1FocusLost
 
@@ -312,6 +362,11 @@ public class registerForm extends javax.swing.JFrame {
         }   
     }//GEN-LAST:event_jPasswordField1KeyReleased
 
+    //Setting the label for username already exists to not visible so the user is not confused
+    private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
+       jLabel6.setVisible(false);
+    }//GEN-LAST:event_jTextField1KeyReleased
+
     /**
      * @param args the command line arguments
      */
@@ -342,7 +397,13 @@ public class registerForm extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new registerForm().setVisible(true);
+                try {
+                    new registerForm().setVisible(true);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(registerForm.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(registerForm.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }

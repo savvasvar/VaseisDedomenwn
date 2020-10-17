@@ -169,7 +169,14 @@ try {
 
     private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
         // TODO add your handling code here:
-        registerForm register=new registerForm();
+        registerForm register = null;
+        try {
+            register = new registerForm();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
+        }
         register.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_jLabel3MouseClicked
