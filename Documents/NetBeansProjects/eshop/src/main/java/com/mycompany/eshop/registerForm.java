@@ -17,6 +17,7 @@ import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -42,6 +43,7 @@ public class registerForm extends javax.swing.JFrame {
     static String     passwd = "test123";
     static Statement statement=null;
     static ResultSet rs =null;
+    PreparedStatement statementIns =null;
     
     //Db query strings,variables
     int userExists,emailExists;
@@ -53,6 +55,7 @@ public class registerForm extends javax.swing.JFrame {
     //Validation flags
     boolean pass_match=true;
     boolean email_format=true;
+    boolean usrn=true,eml=true,pass=true;
     
     //variables for hashing
 
@@ -67,6 +70,9 @@ public class registerForm extends javax.swing.JFrame {
         Class.forName (driverClassName);
         dbConnection = DriverManager.getConnection (url, username, passwd);
         statement = dbConnection.createStatement();
+        String SQL = "INSERT INTO users(username,user_password,email,role_id) "
+                + "VALUES(?,?,?,?)";
+        statementIns= dbConnection.prepareStatement(SQL);
     }
     
     
@@ -236,22 +242,28 @@ public class registerForm extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
        if(!jTextField1.getText().equals("")&&!jTextField2.getText().equals("")&&!jPasswordField1.getText().equals("")&&!jPasswordField2.getText().equals("")){
-          if(true){
+          if(usrn&&eml&&pass){
               try {
                   hashedPass=PasswordUtils.hashPassword(jPasswordField1.getText(),salt).get();
                   System.out.println(hashedPass);
               } catch (InvalidKeySpecException ex) {
                   Logger.getLogger(registerForm.class.getName()).log(Level.SEVERE, null, ex);
               }
+              try {
+                  statementIns.setString(1, jTextField1.getText());
+                  statementIns.setString(2, hashedPass);
+                  statementIns.setString(3, jTextField2.getText());
+                  statementIns.setInt(4, 1);
+                  int affectedRows = statementIns.executeUpdate();
+              } catch (SQLException ex) {
+                  Logger.getLogger(registerForm.class.getName()).log(Level.SEVERE, null, ex);
+              }
+
+              
+            mainProgramGUI mainGUI=new mainProgramGUI();
+            this.dispose();
+            mainGUI.setVisible(true);
           }
-//           try {
-//               System.out.println(verifyPassword(jPasswordField1.getText(),hashedPass,salt));
-//           } catch (InvalidKeySpecException ex) {
-//               Logger.getLogger(registerForm.class.getName()).log(Level.SEVERE, null, ex);
-//           }
-           mainProgramGUI mainGUI=new mainProgramGUI();
-           mainGUI.setVisible(true);
-//           this.dispose();
        }
     }//GEN-LAST:event_jButton1ActionPerformed
     
@@ -272,6 +284,9 @@ public class registerForm extends javax.swing.JFrame {
            }
            if(userExists==1){
                jLabel6.setVisible(true);
+               usrn=false;
+           }else{
+               usrn=true;
            }
        }
     }//GEN-LAST:event_jTextField1FocusLost
@@ -283,9 +298,11 @@ public class registerForm extends javax.swing.JFrame {
                  jLabel8.setText("E-mail doesnt match email format!");
                  jLabel8.setVisible(true);
                  email_format=false;
+                 eml=false;
             }else{
                 jLabel8.setVisible(false);
                 email_format=true;
+                eml=true;
             }
             //If is valid check if already exists in the database
             if(email_format){
@@ -301,7 +318,12 @@ public class registerForm extends javax.swing.JFrame {
                 if(emailExists>0){
                     jLabel8.setText("E-mail already exists!");
                     jLabel8.setVisible(true);
+                    eml=false;
+                }else{
+                    eml=true;
                 }
+            }else{
+                eml=false;
             }
             
         }
@@ -317,6 +339,9 @@ public class registerForm extends javax.swing.JFrame {
            if(!jPasswordField1.getText().equals(jPasswordField2.getText())){
                jLabel7.setVisible(true);
                pass_match=false;
+               pass=false;
+           }else{
+               pass=true;
            }
     }//GEN-LAST:event_jPasswordField2FocusLost
 
