@@ -21,6 +21,8 @@ public class main {
     public static void main(String[] args) throws ClassNotFoundException, SQLException{
           login loginForm=new login();
           loginForm.setVisible(true);
+          PasswordUtils.GenerateSaltFile();
+          
 
     }
     

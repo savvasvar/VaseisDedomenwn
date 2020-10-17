@@ -20,9 +20,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Optional;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -46,7 +44,7 @@ public class registerForm extends javax.swing.JFrame {
     static ResultSet rs =null;
     
     //Db query strings,variables
-    int userExists;
+    int userExists,emailExists;
 
     //Email regular expression patern
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX = 
@@ -54,12 +52,10 @@ public class registerForm extends javax.swing.JFrame {
     
     //Validation flags
     boolean pass_match=true;
+    boolean email_format=true;
     
     //variables for hashing
-    private static final int ITERATIONS = 65536;
-    private static final int KEY_LENGTH = 512;
-    private static final String ALGORITHM = "PBKDF2WithHmacSHA512";
-    private static final SecureRandom RAND = new SecureRandom();
+
     String salt;
     String hashedPass;
     /**
@@ -74,52 +70,7 @@ public class registerForm extends javax.swing.JFrame {
     }
     
     
-    //hashing methods will move them to seperate class
-    public static Optional<String> generateSalt (final int length) {
-
-    if (length < 1) {
-      System.err.println("error in generateSalt: length must be > 0");
-      return Optional.empty();
-    }
-
-    byte[] salt = new byte[length];
-    RAND.nextBytes(salt);
-
-    return Optional.of(Base64.getEncoder().encodeToString(salt));
-  }
     
-    public static Optional<String> hashPassword (String password, String salt) throws InvalidKeySpecException {
-
-    char[] chars = password.toCharArray();
-    byte[] bytes = salt.getBytes();
-
-    PBEKeySpec spec = new PBEKeySpec(chars, bytes, ITERATIONS, KEY_LENGTH);
-
-    Arrays.fill(chars, Character.MIN_VALUE);
-
-    try {
-      SecretKeyFactory fac = SecretKeyFactory.getInstance(ALGORITHM);
-      byte[] securePassword = fac.generateSecret(spec).getEncoded();
-      return Optional.of(Base64.getEncoder().encodeToString(securePassword));
-
-    } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
-      System.err.println("Exception encountered in hashPassword()");
-      return Optional.empty();
-
-    } finally {
-      spec.clearPassword();
-    }
-  }
-   public static boolean verifyPassword (String password, String key, String salt) throws InvalidKeySpecException {
-    Optional<String> optEncrypted = hashPassword(password, salt);
-    if (!optEncrypted.isPresent()) return false;
-    return optEncrypted.get().equals(key);
-  }
-    
-    public static boolean validate(String emailStr) {
-        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);
-        return matcher.find();
-}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -145,6 +96,12 @@ public class registerForm extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+            public void windowIconified(java.awt.event.WindowEvent evt) {
+                formWindowIconified(evt);
+            }
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
             }
@@ -209,7 +166,6 @@ public class registerForm extends javax.swing.JFrame {
         jLabel7.setText("Passwords dont match!");
 
         jLabel8.setForeground(new java.awt.Color(255, 0, 0));
-        jLabel8.setText("E-mail doesnt match email format!");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -281,9 +237,8 @@ public class registerForm extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
        if(!jTextField1.getText().equals("")&&!jTextField2.getText().equals("")&&!jPasswordField1.getText().equals("")&&!jPasswordField2.getText().equals("")){
           if(true){
-              salt = generateSalt(64).get();
               try {
-                  hashedPass=hashPassword(jPasswordField1.getText(),salt).get();
+                  hashedPass=PasswordUtils.hashPassword(jPasswordField1.getText(),salt).get();
                   System.out.println(hashedPass);
               } catch (InvalidKeySpecException ex) {
                   Logger.getLogger(registerForm.class.getName()).log(Level.SEVERE, null, ex);
@@ -296,7 +251,7 @@ public class registerForm extends javax.swing.JFrame {
 //           }
            mainProgramGUI mainGUI=new mainProgramGUI();
            mainGUI.setVisible(true);
-           this.dispose();
+//           this.dispose();
        }
     }//GEN-LAST:event_jButton1ActionPerformed
     
@@ -315,7 +270,7 @@ public class registerForm extends javax.swing.JFrame {
            } catch (SQLException ex) {
                Logger.getLogger(registerForm.class.getName()).log(Level.SEVERE, null, ex);
            }
-           if(userExists==0){
+           if(userExists==1){
                jLabel6.setVisible(true);
            }
        }
@@ -323,19 +278,38 @@ public class registerForm extends javax.swing.JFrame {
 
     private void jTextField2FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField2FocusLost
         if(!jTextField2.getText().equals("")){
-            System.out.println("YEET 1");
-            if(!validate(jTextField2.getText())){
+            //Email format validation
+            if(!PasswordUtils.validate(jTextField2.getText())){
+                 jLabel8.setText("E-mail doesnt match email format!");
                  jLabel8.setVisible(true);
+                 email_format=false;
             }else{
                 jLabel8.setVisible(false);
+                email_format=true;
             }
+            //If is valid check if already exists in the database
+            if(email_format){
+                String emailQuery="select count(email) from users where email='"+jTextField2.getText()+"'";
+                try {
+                    rs=statement.executeQuery(emailQuery);
+                    while(rs.next()){
+                        emailExists=rs.getInt("count");
+                     }
+                } catch (SQLException ex) {
+                     Logger.getLogger(registerForm.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                if(emailExists>0){
+                    jLabel8.setText("E-mail already exists!");
+                    jLabel8.setVisible(true);
+                }
+            }
+            
         }
     }//GEN-LAST:event_jTextField2FocusLost
 
 
     private void jPasswordField1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jPasswordField1FocusLost
         if(!jPasswordField1.getText().equals("")){
-            System.out.println("YEET 2");
         }
     }//GEN-LAST:event_jPasswordField1FocusLost
 
@@ -343,7 +317,6 @@ public class registerForm extends javax.swing.JFrame {
            if(!jPasswordField1.getText().equals(jPasswordField2.getText())){
                jLabel7.setVisible(true);
                pass_match=false;
-               System.out.println("They match bro");
            }
     }//GEN-LAST:event_jPasswordField2FocusLost
 
@@ -351,6 +324,8 @@ public class registerForm extends javax.swing.JFrame {
         jLabel6.setVisible(false);
         jLabel7.setVisible(false);
         jLabel8.setVisible(false);
+        PasswordUtils pass= new PasswordUtils();
+        salt=pass.ReadSaltFile();
     }//GEN-LAST:event_formWindowOpened
 
     private void jPasswordField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPasswordField1KeyReleased
@@ -366,6 +341,21 @@ public class registerForm extends javax.swing.JFrame {
     private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
        jLabel6.setVisible(false);
     }//GEN-LAST:event_jTextField1KeyReleased
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        try {
+           
+            statement.close();
+             dbConnection.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(registerForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }//GEN-LAST:event_formWindowClosed
+
+    private void formWindowIconified(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowIconified
+        // TODO add your handling code here:
+    }//GEN-LAST:event_formWindowIconified
 
     /**
      * @param args the command line arguments
@@ -393,7 +383,6 @@ public class registerForm extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(registerForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
