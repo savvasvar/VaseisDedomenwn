@@ -5,6 +5,7 @@
  */
 package com.mycompany.eshop;
 
+import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,6 +26,9 @@ public class login extends javax.swing.JFrame {
     static String     passwd = "test123";
     static Statement statement=null;
     static ResultSet rs =null;
+    
+    String salt;
+    boolean isCorrect;
     
     
     public login() throws ClassNotFoundException, SQLException {
@@ -54,6 +58,9 @@ public class login extends javax.swing.JFrame {
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosed(java.awt.event.WindowEvent evt) {
                 formWindowClosed(evt);
+            }
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
             }
         });
 
@@ -135,33 +142,47 @@ public class login extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         user logedUser=new user();
-       
-        try {                                         
-            
-//        System.out.println(jTextField1.getText()+" "+jPasswordField1.getText());
-// TODO add your handling code here:
+        try {                                                
+            try {
+                String selectString = "select user_password from users where username='"+jTextField1.getText()+"'";
+                System.out.println(selectString);
+                rs=statement.executeQuery(selectString);
+                while(rs.next()){
+                      String user_password=rs.getString("user_password");
+                    try {
+//                        String hashed=PasswordUtils.hashPassword(jPasswordField1.getText(), salt).get();
+                        System.out.println(jTextField1.getText()+"\n"+user_password+"\n"+salt);
+                        isCorrect=PasswordUtils.verifyPassword(jPasswordField1.getText(), user_password, salt);
+                        System.out.println(isCorrect);
+                    } catch (InvalidKeySpecException ex) {
+                        Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
+                    }
 
-try {
-    String selectString = "select username,user_id,email,role_id from users where username='"+jTextField1.getText()+"' and user_password='"+jPasswordField1.getText()+"'";
-    System.out.println(selectString);
-    rs=statement.executeQuery(selectString);
-    while(rs.next()){
-        String username=rs.getString("username");
-        logedUser.setUsername(username);
-        String email=rs.getString("email");
-        logedUser.setEmail(email);
-        int user_id=rs.getInt("user_id");
-        logedUser.setUserId(user_id);
-         int role_id=rs.getInt("role_id");
-        logedUser.setRoleId(role_id);
-        System.out.println(username+" "+user_id);
-        
-    }
-} catch (SQLException ex) {
-    Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
-}
-    statement.close();
-    dbConnection.close();
+                }
+                if(isCorrect){
+                            System.out.println("I am here");
+                            String selectUser="select username,email,user_id,role_id from users where username='"+jTextField1.getText()+"'";
+                            rs=statement.executeQuery(selectUser);
+                            while(rs.next()){
+                                String username=rs.getString("username");
+                                logedUser.setUsername(username);
+                                String email=rs.getString("email");
+                                logedUser.setEmail(email);
+                                int user_id=rs.getInt("user_id");
+                                logedUser.setUserId(user_id);
+                                 int role_id=rs.getInt("role_id");
+                                logedUser.setRoleId(role_id);
+                                System.out.println(username+" "+user_id);
+                            }
+
+                        }
+
+
+            } catch (SQLException ex) {
+                Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            statement.close();
+            dbConnection.close();
         } catch (SQLException ex) {
             Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -180,6 +201,11 @@ try {
         register.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_jLabel3MouseClicked
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        PasswordUtils utp=new PasswordUtils();
+        salt=utp.ReadSaltFile();
+    }//GEN-LAST:event_formWindowOpened
 
     /**
      * @param args the command line arguments
@@ -207,7 +233,7 @@ try {
             java.util.logging.Logger.getLogger(login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
+       
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
