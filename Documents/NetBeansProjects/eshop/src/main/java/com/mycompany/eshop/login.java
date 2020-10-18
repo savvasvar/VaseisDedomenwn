@@ -173,6 +173,10 @@ public class login extends javax.swing.JFrame {
                                  int role_id=rs.getInt("role_id");
                                 logedUser.setRoleId(role_id);
                                 System.out.println(username+" "+user_id);
+                                mainProgramGUI gui=new mainProgramGUI();
+                                gui.userInfo(logedUser);
+                                gui.setVisible(true);
+                                this.dispose();
                             }
 
                         }

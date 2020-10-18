@@ -260,9 +260,17 @@ public class registerForm extends javax.swing.JFrame {
               }
 
               
-            mainProgramGUI mainGUI=new mainProgramGUI();
-            this.dispose();
-            mainGUI.setVisible(true);
+              try {
+                  login login_redirect=new login();
+                  login_redirect.setVisible(true);
+                  this.dispose();
+              } catch (ClassNotFoundException ex) {
+                  Logger.getLogger(registerForm.class.getName()).log(Level.SEVERE, null, ex);
+              } catch (SQLException ex) {
+                  Logger.getLogger(registerForm.class.getName()).log(Level.SEVERE, null, ex);
+              }
+            
+            
           }
        }
     }//GEN-LAST:event_jButton1ActionPerformed
