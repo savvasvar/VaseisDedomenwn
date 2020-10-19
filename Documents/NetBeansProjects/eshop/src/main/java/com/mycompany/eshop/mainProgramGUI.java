@@ -25,6 +25,8 @@ public class mainProgramGUI extends javax.swing.JFrame {
         userInfo.setUsername(user.getUsername());
         userInfo.setUserId(user.getUserId());
         userInfo.setRoleId(user.getRoleId());
+        
+        //raandom
     }
 
     /**
