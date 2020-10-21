@@ -17,7 +17,7 @@ public class main {
      * @param args the command line arguments
      */
 
-    //Dimtrisi Comitt
+    
     public static void main(String[] args) throws ClassNotFoundException, SQLException{
           login loginForm=new login();
           loginForm.setVisible(true);
