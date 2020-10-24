@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
@@ -19,15 +21,23 @@ import javax.swing.table.TableColumn;
 public class mainProgramGUI extends javax.swing.JFrame {
     user userInfo=new user();
     dbHandler db=new dbHandler();
+    
     /**
      * Creates new form mainProgramGUI
      */
     
     public mainProgramGUI() {
         initComponents();
-        jButton1.setVisible(false);
-        jButton2.setVisible(false);
-        
+        jTabbedPane1.addChangeListener(new  ChangeListener(){
+            public void stateChanged(ChangeEvent e) {
+            
+            if(jTabbedPane1.getSelectedIndex()==0){
+                jButton1.setVisible(true);
+            }else{
+                jButton1.setVisible(false);
+            }
+        }
+        });        
     }
     public void userInfo(user user){
         userInfo.setEmail(user.getemail());
