@@ -68,6 +68,8 @@ public class mainProgramGUI extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
         log_panel = new javax.swing.JPanel();
         Panel = new javax.swing.JScrollPane();
         log_Table = new javax.swing.JTable();
@@ -129,20 +131,36 @@ public class mainProgramGUI extends javax.swing.JFrame {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
+            .addComponent(jScrollPane1)
         );
 
         jTabbedPane1.addTab("Products", jPanel1);
+
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Order ID", "Customer", "Date"
+            }
+        ));
+        jScrollPane2.setViewportView(jTable2);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 509, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 509, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 275, Short.MAX_VALUE)
+            .addGap(0, 427, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         jTabbedPane1.addTab("Orders", jPanel2);
@@ -168,7 +186,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
         );
         log_panelLayout.setVerticalGroup(
             log_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(Panel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
+            .addComponent(Panel, javax.swing.GroupLayout.Alignment.TRAILING)
         );
 
         jTabbedPane1.addTab("Log", log_panel);
@@ -186,6 +204,11 @@ public class mainProgramGUI extends javax.swing.JFrame {
         });
 
         jButton2.setText("On Stock");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         header_panel.setBackground(new java.awt.Color(255, 102, 51));
 
@@ -247,23 +270,14 @@ public class mainProgramGUI extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jButton2))
                     .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(57, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        try {
-            Product[] data=db.getProducts();
-            DefaultTableModel tblModel=(DefaultTableModel) jTable1.getModel();
-            for(int i=0;i<data.length;i++){
-                String proString[]=data[i].getProductString();
-                tblModel.addRow(proString);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(mainProgramGUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        TableDataHandler();
        
     }//GEN-LAST:event_formWindowOpened
 
@@ -297,6 +311,23 @@ public class mainProgramGUI extends javax.swing.JFrame {
     private void jPanel1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jPanel1FocusLost
 
     }//GEN-LAST:event_jPanel1FocusLost
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+       if(jTable1.getModel().getRowCount()!=0){
+            DefaultTableModel model=(DefaultTableModel) jTable1.getModel();
+            model.setRowCount(0);
+        }
+         try {
+            Product[] data=db.getFilteredProducts(1);
+            DefaultTableModel tblModel=(DefaultTableModel) jTable1.getModel();
+            for(int i=0;i<data.length;i++){
+                String proString[]=data[i].getProductString();
+                tblModel.addRow(proString);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(mainProgramGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -332,6 +363,26 @@ public class mainProgramGUI extends javax.swing.JFrame {
             }
         });
     }
+    public void TableDataHandler(){
+        if(jTable1.getModel().getRowCount()!=0){
+            DefaultTableModel model=(DefaultTableModel) jTable1.getModel();
+            model.setRowCount(0);
+        }
+         try {
+            Product[] data=db.getProducts();
+            DefaultTableModel tblModel=(DefaultTableModel) jTable1.getModel();
+            for(int i=0;i<data.length;i++){
+                String proString[]=data[i].getProductString();
+                tblModel.addRow(proString);
+            }
+            Orders[] ord=db.getOrders();
+            for(int i=0;i<ord.length;i++){
+                System.out.println(ord[i].getOrderID()+"  "+ord[i].getDate());
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(mainProgramGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane Panel;
@@ -343,8 +394,10 @@ public class mainProgramGUI extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable2;
     private javax.swing.JTable log_Table;
     private javax.swing.JPanel log_panel;
     private javax.swing.JLabel username_label;
