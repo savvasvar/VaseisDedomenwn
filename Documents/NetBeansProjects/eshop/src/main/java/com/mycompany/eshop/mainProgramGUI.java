@@ -28,6 +28,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
     
     public mainProgramGUI() {
         initComponents();
+        Panel.setVisible(false);
         jTabbedPane1.addChangeListener(new  ChangeListener(){
             public void stateChanged(ChangeEvent e) {
             
@@ -35,6 +36,9 @@ public class mainProgramGUI extends javax.swing.JFrame {
                 jButton1.setVisible(true);
             }else{
                 jButton1.setVisible(false);
+            }
+            if(userInfo.getRoleId() == 1){ /**I activate the log panel only for admins*/
+                Panel.setVisible(true);
             }
         }
         });        
@@ -64,6 +68,9 @@ public class mainProgramGUI extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
+        log_panel = new javax.swing.JPanel();
+        Panel = new javax.swing.JScrollPane();
+        log_Table = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         header_panel = new javax.swing.JPanel();
@@ -122,9 +129,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Products", jPanel1);
@@ -137,10 +142,36 @@ public class mainProgramGUI extends javax.swing.JFrame {
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 263, Short.MAX_VALUE)
+            .addGap(0, 275, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Orders", jPanel2);
+
+        log_Table.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        Panel.setViewportView(log_Table);
+
+        javax.swing.GroupLayout log_panelLayout = new javax.swing.GroupLayout(log_panel);
+        log_panel.setLayout(log_panelLayout);
+        log_panelLayout.setHorizontalGroup(
+            log_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(Panel, javax.swing.GroupLayout.DEFAULT_SIZE, 509, Short.MAX_VALUE)
+        );
+        log_panelLayout.setVerticalGroup(
+            log_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(Panel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("Log", log_panel);
 
         jButton1.setText("New Product");
         jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -215,8 +246,8 @@ public class mainProgramGUI extends javax.swing.JFrame {
                         .addComponent(jButton1)
                         .addGap(18, 18, 18)
                         .addComponent(jButton2))
-                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(69, Short.MAX_VALUE))
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(57, Short.MAX_VALUE))
         );
 
         pack();
@@ -303,6 +334,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
     }
    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane Panel;
     private javax.swing.JPanel header_panel;
     private javax.swing.JLabel icon_label;
     private javax.swing.JButton jButton1;
@@ -313,6 +345,8 @@ public class mainProgramGUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTable log_Table;
+    private javax.swing.JPanel log_panel;
     private javax.swing.JLabel username_label;
     // End of variables declaration//GEN-END:variables
 }
