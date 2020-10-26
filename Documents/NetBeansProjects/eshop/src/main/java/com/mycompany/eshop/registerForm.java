@@ -245,7 +245,7 @@ public class registerForm extends javax.swing.JFrame {
           if(usrn&&eml&&pass){
               try {
                   hashedPass=PasswordUtils.hashPassword(jPasswordField1.getText(),salt).get();
-                  System.out.println(hashedPass);
+//                  System.out.println(hashedPass);
               } catch (InvalidKeySpecException ex) {
                   Logger.getLogger(registerForm.class.getName()).log(Level.SEVERE, null, ex);
               }
@@ -280,12 +280,12 @@ public class registerForm extends javax.swing.JFrame {
     private void jTextField1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField1FocusLost
        if(!jTextField1.getText().equals("")){
            String findIfExists="select count(username) from users where username='"+jTextField1.getText()+"'";
-           System.out.println("Here : "+findIfExists);
+//           System.out.println("Here : "+findIfExists);
            try {
                rs=statement.executeQuery(findIfExists);
                while(rs.next()){
                    userExists=rs.getInt("count");
-                   System.out.println("count is : "+userExists);
+//                   System.out.println("count is : "+userExists);
                 }
            } catch (SQLException ex) {
                Logger.getLogger(registerForm.class.getName()).log(Level.SEVERE, null, ex);
@@ -362,7 +362,7 @@ public class registerForm extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowOpened
 
     private void jPasswordField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPasswordField1KeyReleased
-          System.out.println(jPasswordField1.getText()+" "+jPasswordField2.getText());
+//          System.out.println(jPasswordField1.getText()+" "+jPasswordField2.getText());
         if(!jPasswordField2.getText().equals("")){
             if(jPasswordField1.getText().equals(jPasswordField2.getText())){
                jLabel7.setVisible(false);

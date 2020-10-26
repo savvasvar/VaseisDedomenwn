@@ -43,4 +43,9 @@ public class Orders {
     public void setProductList(List<Order> list){
         this.productList=list;
     }
+     public String[] getOrdersString(){
+        String order_id=String.valueOf(this.order_id);
+        String[] data={order_id,this.customer,this.date};
+        return data;
+    }
 }

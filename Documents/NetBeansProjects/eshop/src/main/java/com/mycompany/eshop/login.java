@@ -145,22 +145,22 @@ public class login extends javax.swing.JFrame {
         try {                                                
             try {
                 String selectString = "select user_password from users where username='"+jTextField1.getText()+"'";
-                System.out.println(selectString);
+//                System.out.println(selectString);
                 rs=statement.executeQuery(selectString);
                 while(rs.next()){
                       String user_password=rs.getString("user_password");
                     try {
 //                        String hashed=PasswordUtils.hashPassword(jPasswordField1.getText(), salt).get();
-                        System.out.println(jTextField1.getText()+"\n"+user_password+"\n"+salt);
+//                        System.out.println(jTextField1.getText()+"\n"+user_password+"\n"+salt);
                         isCorrect=PasswordUtils.verifyPassword(jPasswordField1.getText(), user_password, salt);
-                        System.out.println(isCorrect);
+//                        System.out.println(isCorrect);
                     } catch (InvalidKeySpecException ex) {
                         Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
                 }
                 if(isCorrect){
-                            System.out.println("I am here");
+//                            System.out.println("I am here");
                             String selectUser="select username,email,user_id,role_id from users where username='"+jTextField1.getText()+"'";
                             rs=statement.executeQuery(selectUser);
                             while(rs.next()){
@@ -172,7 +172,7 @@ public class login extends javax.swing.JFrame {
                                 logedUser.setUserId(user_id);
                                  int role_id=rs.getInt("role_id");
                                 logedUser.setRoleId(role_id);
-                                System.out.println(username+" "+user_id);
+//                                System.out.println(username+" "+user_id);
                                 mainProgramGUI gui=new mainProgramGUI();
                                 gui.userInfo(logedUser);
                                 gui.setVisible(true);

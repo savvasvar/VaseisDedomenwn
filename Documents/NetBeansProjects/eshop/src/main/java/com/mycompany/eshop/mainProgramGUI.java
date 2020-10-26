@@ -34,8 +34,10 @@ public class mainProgramGUI extends javax.swing.JFrame {
             
             if(jTabbedPane1.getSelectedIndex()==0){
                 jButton1.setVisible(true);
+                jButton2.setVisible(true);
             }else{
                 jButton1.setVisible(false);
+                jButton2.setVisible(false);
             }
             if(userInfo.getRoleId() == 1){ /**I activate the log panel only for admins*/
                 Panel.setVisible(true);
@@ -376,8 +378,10 @@ public class mainProgramGUI extends javax.swing.JFrame {
                 tblModel.addRow(proString);
             }
             Orders[] ord=db.getOrders();
+            DefaultTableModel tblModel2=(DefaultTableModel) jTable2.getModel();
             for(int i=0;i<ord.length;i++){
-                System.out.println(ord[i].getOrderID()+"  "+ord[i].getDate());
+                String[] ordString=ord[i].getOrdersString();
+                tblModel2.addRow(ordString);
             }
         } catch (SQLException ex) {
             Logger.getLogger(mainProgramGUI.class.getName()).log(Level.SEVERE, null, ex);

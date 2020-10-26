@@ -173,6 +173,27 @@ public class dbHandler {
         }
         return ret;
     }
+    public String getCustomerName(int id) throws SQLException{
+        connect();
+        String name="";
+        String selectString2 = "select username from customers where customer_id="+id;
+        rs=statement.executeQuery(selectString2);
+        while(rs.next()){
+            name=rs.getString("username");
+        }
+        return name;
+    }
+    public String getProductName(int id) throws SQLException{
+        connect();
+        String name="";
+        String selectString2 = "select product_name from products where product_id="+id;
+        rs=statement.executeQuery(selectString2);
+        while(rs.next()){
+            name=rs.getString("product_name");
+        }
+        return name;
+    }
+
     public Orders[] getOrders() throws SQLException{
         connect();
         int numOfOrders=0;
@@ -200,7 +221,7 @@ public class dbHandler {
                     custom=cs;
                     ord.setCustomer(cs);
                     Date date=rs.getDate("timestamp");
-                    DateFormat dateFormat=new SimpleDateFormat("yyyy-mm-dd");
+                    DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
                     String strDate=dateFormat.format(date);
                     dateMOD=strDate;
                     ord.setDate(strDate);
@@ -209,8 +230,17 @@ public class dbHandler {
                     ord.setProductName(pname);
                     orderList.add(ord);
             }
-            order.setCustomer(custom);
+            int cid=Integer.parseInt(custom);
+            order.setCustomer(getCustomerName(cid));
             order.setDate(dateMOD);
+            for(int c=0;c<orderList.size();c++){
+                int cID=Integer.parseInt(orderList.get(c).getCustomer());
+                orderList.get(c).setCustomer(getCustomerName(cID));
+//                System.out.println(getCustomerName(cID));
+                int pID=Integer.parseInt(orderList.get(c).getProductName());
+                orderList.get(c).setProductName(getProductName(pID));
+//                System.out.println(getProductName(pID));
+            }
             order.setProductList(orderList);
             orders[i-1]=order;
         }
