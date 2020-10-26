@@ -246,4 +246,24 @@ public class dbHandler {
         }
         return orders;
     }
+    public float getProductsPrice(String name) throws SQLException{
+        connect();
+        float price=0;
+        String selectString2 = "select price from products where product_name='"+name+"'";
+        rs=statement.executeQuery(selectString2);
+        while(rs.next()){
+            price=rs.getFloat("price");
+        }
+        return price;
+    }
+    public int getBarcode(String name) throws SQLException{
+        connect();
+        int barcode=0;
+        String selectString2 = "select barcode from products where product_name='"+name+"'";
+        rs=statement.executeQuery(selectString2);
+        while(rs.next()){
+            barcode=rs.getInt("barcode");
+        }
+        return barcode;
+    }
 }

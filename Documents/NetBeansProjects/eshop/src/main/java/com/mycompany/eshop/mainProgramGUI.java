@@ -5,10 +5,15 @@
  */
 package com.mycompany.eshop;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
+import javax.swing.JTable;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
@@ -21,6 +26,7 @@ import javax.swing.table.TableColumn;
 public class mainProgramGUI extends javax.swing.JFrame {
     user userInfo=new user();
     dbHandler db=new dbHandler();
+    List<Orders> ordersList=new ArrayList<Orders>();
     
     /**
      * Creates new form mainProgramGUI
@@ -43,7 +49,19 @@ public class mainProgramGUI extends javax.swing.JFrame {
                 Panel.setVisible(true);
             }
         }
-        });        
+        });
+        jTable2.addMouseListener(new MouseAdapter(){
+            public void mouseClicked(MouseEvent me){
+                if(me.getClickCount()== 2){
+                    JTable target = (JTable)me.getSource();
+                    int row = target.getSelectedRow();
+                    System.out.println(row);
+                    OrderDetails ordDetails=new OrderDetails();
+                    ordDetails.setOrder(ordersList.get(row));
+                    ordDetails.setVisible(true);
+                }
+            }
+        });
     }
     public void userInfo(user user){
         userInfo.setEmail(user.getemail());
@@ -145,7 +163,15 @@ public class mainProgramGUI extends javax.swing.JFrame {
             new String [] {
                 "Order ID", "Customer", "Date"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane2.setViewportView(jTable2);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -380,6 +406,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
             Orders[] ord=db.getOrders();
             DefaultTableModel tblModel2=(DefaultTableModel) jTable2.getModel();
             for(int i=0;i<ord.length;i++){
+                ordersList.add(ord[i]);
                 String[] ordString=ord[i].getOrdersString();
                 tblModel2.addRow(ordString);
             }
