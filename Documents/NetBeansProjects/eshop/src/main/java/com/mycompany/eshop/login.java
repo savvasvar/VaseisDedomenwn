@@ -35,6 +35,7 @@ public class login extends javax.swing.JFrame {
     
     public login() throws ClassNotFoundException, SQLException {
         initComponents();
+        jLabel4.setVisible(false);
         Class.forName (driverClassName);
         dbConnection = DriverManager.getConnection (url, username, passwd);
         statement = dbConnection.createStatement();
@@ -64,6 +65,7 @@ public class login extends javax.swing.JFrame {
         jPasswordField1 = new javax.swing.JPasswordField();
         jButton1 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -96,6 +98,9 @@ public class login extends javax.swing.JFrame {
             }
         });
 
+        jLabel4.setForeground(new java.awt.Color(255, 0, 0));
+        jLabel4.setText("Login failed!");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -110,6 +115,7 @@ public class login extends javax.swing.JFrame {
                         .addComponent(jLabel1)
                         .addGap(16, 16, 16)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(10, 10, 10)
                         .addComponent(jLabel3))
@@ -130,7 +136,9 @@ public class login extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(34, 34, 34)
+                .addGap(9, 9, 9)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel3)
@@ -157,7 +165,7 @@ public class login extends javax.swing.JFrame {
 
     public void login(){
          user logedUser=new user();
-        try {                                                
+                                                      
             try {
                 String selectString = "select user_password from users where username='"+jTextField1.getText()+"'";
 //                System.out.println(selectString);
@@ -175,6 +183,7 @@ public class login extends javax.swing.JFrame {
 
                 }
                 if(isCorrect){
+                            jLabel4.setVisible(false);
 //                            System.out.println("I am here");
                             String selectUser="select username,email,user_id,role_id from users where username='"+jTextField1.getText()+"'";
                             rs=statement.executeQuery(selectUser);
@@ -193,18 +202,18 @@ public class login extends javax.swing.JFrame {
                                 gui.setVisible(true);
                                 this.dispose();
                             }
+                            
 
+                         }else{
+                            jLabel4.setVisible(true);
                         }
 
 
             } catch (SQLException ex) {
                 Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
             }
-            statement.close();
-            dbConnection.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            
+      
     }
     private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
         // TODO add your handling code here:
@@ -274,6 +283,7 @@ public class login extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
