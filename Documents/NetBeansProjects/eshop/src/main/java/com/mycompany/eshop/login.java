@@ -5,6 +5,8 @@
  */
 package com.mycompany.eshop;
 
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
 import java.util.logging.Level;
@@ -36,6 +38,15 @@ public class login extends javax.swing.JFrame {
         Class.forName (driverClassName);
         dbConnection = DriverManager.getConnection (url, username, passwd);
         statement = dbConnection.createStatement();
+        jPasswordField1.addKeyListener(new KeyAdapter(){
+            public void keyPressed(KeyEvent evt)
+                {
+                    if(evt.getKeyCode() == KeyEvent.VK_ENTER)
+                    {
+                        login();
+                    }
+                }
+        });
     }
 
     /**
@@ -141,7 +152,11 @@ public class login extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowClosed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        user logedUser=new user();
+       login();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    public void login(){
+         user logedUser=new user();
         try {                                                
             try {
                 String selectString = "select user_password from users where username='"+jTextField1.getText()+"'";
@@ -190,8 +205,7 @@ public class login extends javax.swing.JFrame {
         } catch (SQLException ex) {
             Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
-
+    }
     private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
         // TODO add your handling code here:
         registerForm register = null;
