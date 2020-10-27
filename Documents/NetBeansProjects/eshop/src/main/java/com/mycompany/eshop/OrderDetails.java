@@ -5,11 +5,25 @@
  */
 package com.mycompany.eshop;
 
+import java.awt.Color;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentInformation;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.vandeseer.easytable.TableDrawer;
+import org.vandeseer.easytable.settings.HorizontalAlignment;
+import org.vandeseer.easytable.structure.Row;
+import org.vandeseer.easytable.structure.Table;
+import org.vandeseer.easytable.structure.Table.TableBuilder;
+import org.vandeseer.easytable.structure.cell.TextCell;
 
 /**
  *
@@ -150,18 +164,65 @@ public class OrderDetails extends javax.swing.JFrame {
             Logger.getLogger(OrderDetails.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_formWindowOpened
+    private Table createHeader() {
+          final TableBuilder tableBuilder0 = Table.builder()
+                        .addColumnsOfWidth(150,250,250)
+                        .padding(2)
+                        .addRow(Row.builder()
+                                .add(TextCell.builder().text("Order ID: "+ord.getOrderID()).borderWidth(0).backgroundColor(Color.WHITE).build())
+                                .add(TextCell.builder().text("Customer Name: "+ord.getCustomer()).borderWidth(0).backgroundColor(Color.WHITE).build())
+                                .add(TextCell.builder().text("Order Date: "+ord.getDate()).borderWidth(0).backgroundColor(Color.WHITE).build())
+                                .build());
+          return tableBuilder0.build();
+    }
+    private Table createTable(Orders ord) throws SQLException{
+        final TableBuilder tableBuilder = Table.builder()
+                            .addColumnsOfWidth(200,100,100,100);
+
+                    
+                            tableBuilder.addRow(Row.builder()
+                                .add(TextCell.builder().text("Product Name").borderWidth(1).backgroundColor(Color.WHITE).build())
+                                .add(TextCell.builder().text("Barcode").borderWidth(1).backgroundColor(Color.WHITE).build())
+                                .add(TextCell.builder().text("Price").borderWidth(1).backgroundColor(Color.WHITE).build())
+                                .add(TextCell.builder().text("Amount").borderWidth(1).backgroundColor(Color.WHITE).build())
+                                .build());
+                    float total=0;
+                    for(int i=0;i<ord.getProductList().size();i++){
+                        total+=ord.getProductList().get(i).getProductAmount()*db.getProductsPrice(ord.getProductList().get(i).getProductName());
+                        tableBuilder.addRow(Row.builder()
+                        .add(TextCell.builder().text(ord.getProductList().get(i).getProductName()+"").borderWidth(1).build())
+                        .add(TextCell.builder().text(db.getBarcode(ord.getProductList().get(i).getProductName())+"").borderWidth(1).build())
+                        .add(TextCell.builder().text( db.getProductsPrice(ord.getProductList().get(i).getProductName())+" €").borderWidth(1).build())
+                        .add(TextCell.builder().text(ord.getProductList().get(i).getProductAmount()+"").borderWidth(1).borderWidth(1).build())
+                        .backgroundColor(Color.WHITE)
+                        .build());
+                    }
+                    tableBuilder.addRow(Row.builder()
+                        .add(TextCell.builder().text("Total:").borderWidth(0).build())
+                        .add(TextCell.builder().text("").borderWidth(0).build())
+                        .add(TextCell.builder().text("").borderWidth(0).build())
+                        .add(TextCell.builder().text(total+"€").borderWidth(1).borderWidth(1).build())
+                        .backgroundColor(Color.WHITE)
+                        .build());
+         return tableBuilder.build();
+    }
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
             int res=db.OrderSetComplete(ord.getOrderID());
             if(res>0){
-                TableHandler();
+                try {
+                    TestUtils.createAndSaveDocumentWithTables("../"+ord.getOrderID()+"Order_."+ord.getDate()+".pdf", createHeader(),createTable(ord));
+                } catch (IOException ex) {
+                    Logger.getLogger(OrderDetails.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 this.dispose();
             }
         } catch (SQLException ex) {
             Logger.getLogger(OrderDetails.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+
     public void TableHandler() throws SQLException{
         if(jTable1.getModel().getRowCount()!=0){
             DefaultTableModel model=(DefaultTableModel) jTable1.getModel();
