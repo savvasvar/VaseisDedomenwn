@@ -15,6 +15,7 @@ import static com.mycompany.eshop.login.username;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -22,6 +23,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,6 +39,7 @@ public class dbHandler {
     static String     passwd = "test123";
     static Statement statement=null;
     static ResultSet rs =null;
+    PreparedStatement statementIns =null;
     
     //Creates database Connection
     public void connect() throws SQLException{
@@ -197,6 +200,7 @@ public class dbHandler {
     public Orders[] getOrders() throws SQLException{
         connect();
         int numOfOrders=0;
+        List<Orders> fret=new ArrayList();
         String selectString = "select max(order_id) from orders";
         rs=statement.executeQuery(selectString);
         while(rs.next()){
@@ -204,47 +208,63 @@ public class dbHandler {
         }
         Orders[] orders=new Orders[numOfOrders];
         for(int i=numOfOrders;i>0;i--){
-            String dateMOD=null,custom=null;
-            var orderList=new ArrayList<Order>();
-            Orders order=new Orders();
-            order.setOrderID(i);
-            String getOrders = "select * from orders where order_id="+i;
-            rs=statement.executeQuery(getOrders);
-            while(rs.next()){
-                    Order ord=new Order();
-                    int order_id=rs.getInt("order_id");
-                    ord.setOrderID(order_id);
-                    int product_amount=rs.getInt("amount");
-                    ord.setProductAmount(product_amount);
-                    int customer=rs.getInt("customer_id");
-                    String cs=String.valueOf(customer);
-                    custom=cs;
-                    ord.setCustomer(cs);
-                    Date date=rs.getDate("timestamp");
-                    DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
-                    String strDate=dateFormat.format(date);
-                    dateMOD=strDate;
-                    ord.setDate(strDate);
-                    int product_name=rs.getInt("product_id");
-                    String pname=String.valueOf(product_name);
-                    ord.setProductName(pname);
-                    orderList.add(ord);
+            
+                String dateMOD=null,custom=null;
+                var orderList=new ArrayList<Order>();
+                Orders order=new Orders();
+                order.setOrderID(i);
+                String getOrders = "select * from orders where order_id="+i;
+                rs=statement.executeQuery(getOrders);
+                while(rs.next()){
+                        Order ord=new Order();
+                        int order_id=rs.getInt("order_id");
+                        ord.setOrderID(order_id);
+                        int product_amount=rs.getInt("amount");
+                        ord.setProductAmount(product_amount);
+                        int customer=rs.getInt("customer_id");
+                        String cs=String.valueOf(customer);
+                        custom=cs;
+                        ord.setCustomer(cs);
+                        Date date=rs.getDate("timestamp");
+                        DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
+                        String strDate=dateFormat.format(date);
+                        dateMOD=strDate;
+                        ord.setDate(strDate);
+                        int product_name=rs.getInt("product_id");
+                        String pname=String.valueOf(product_name);
+                        ord.setProductName(pname);
+                        orderList.add(ord); 
+                }
+                int cid=Integer.parseInt(custom);
+                order.setCustomer(getCustomerName(cid));
+                order.setDate(dateMOD);
+                for(int c=0;c<orderList.size();c++){
+                    int cID=Integer.parseInt(orderList.get(c).getCustomer());
+                    orderList.get(c).setCustomer(getCustomerName(cID));
+    //                System.out.println(getCustomerName(cID));
+                    int pID=Integer.parseInt(orderList.get(c).getProductName());
+                    orderList.get(c).setProductName(getProductName(pID));
+    //                System.out.println(getProductName(pID));
+                }
+                order.setProductList(orderList);
+                orders[i-1]=order;
             }
-            int cid=Integer.parseInt(custom);
-            order.setCustomer(getCustomerName(cid));
-            order.setDate(dateMOD);
-            for(int c=0;c<orderList.size();c++){
-                int cID=Integer.parseInt(orderList.get(c).getCustomer());
-                orderList.get(c).setCustomer(getCustomerName(cID));
-//                System.out.println(getCustomerName(cID));
-                int pID=Integer.parseInt(orderList.get(c).getProductName());
-                orderList.get(c).setProductName(getProductName(pID));
-//                System.out.println(getProductName(pID));
+            for(int i=0;i<orders.length;i++){
+                boolean flag=false;
+                String filter = "select completed from orders where order_id="+orders[i].getOrderID();
+                rs=statement.executeQuery(filter);
+                while(rs.next()){
+                   flag=rs.getBoolean("completed");
+                }
+                if(!flag){
+                    fret.add(orders[i]);
+                }
             }
-            order.setProductList(orderList);
-            orders[i-1]=order;
-        }
-        return orders;
+            Orders[] retArray=new Orders[fret.size()];
+            for(int i=0;i<fret.size();i++){
+                retArray[i]=fret.get(i);
+            }
+        return retArray;
     }
     public float getProductsPrice(String name) throws SQLException{
         connect();
@@ -265,5 +285,13 @@ public class dbHandler {
             barcode=rs.getInt("barcode");
         }
         return barcode;
+    }
+    public int  OrderSetComplete(int id) throws SQLException{
+        connect();
+        String SQL = "UPDATE orders SET completed=true where order_id=?";
+        statementIns= dbConnection.prepareStatement(SQL);
+        statementIns.setInt(1, id);
+        int affectedRows = statementIns.executeUpdate();
+        return affectedRows;
     }
 }

@@ -77,6 +77,11 @@ public class OrderDetails extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTable1);
 
         jButton1.setText("Complete Order");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Cancel");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -145,7 +150,23 @@ public class OrderDetails extends javax.swing.JFrame {
             Logger.getLogger(OrderDetails.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_formWindowOpened
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        try {
+            int res=db.OrderSetComplete(ord.getOrderID());
+            if(res>0){
+                TableHandler();
+                this.dispose();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDetails.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
     public void TableHandler() throws SQLException{
+        if(jTable1.getModel().getRowCount()!=0){
+            DefaultTableModel model=(DefaultTableModel) jTable1.getModel();
+            model.setRowCount(0);
+        }
         String ordStr[]=new String[ord.getProductList().size()];
         DefaultTableModel tblModel=(DefaultTableModel) jTable1.getModel();
         for(int i=0;i<ord.getProductList().size();i++){

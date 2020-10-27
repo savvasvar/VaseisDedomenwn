@@ -59,6 +59,13 @@ public class mainProgramGUI extends javax.swing.JFrame {
                     OrderDetails ordDetails=new OrderDetails();
                     ordDetails.setOrder(ordersList.get(row));
                     ordDetails.setVisible(true);
+                    ordDetails.addWindowListener(new java.awt.event.WindowAdapter(){
+                        @Override
+                        public void windowClosing(java.awt.event.WindowEvent windowEvent){
+                            TableDataHandler();
+                            System.out.println("I did catch the event");
+                        }
+                    } );
                 }
             }
         });
@@ -395,6 +402,10 @@ public class mainProgramGUI extends javax.swing.JFrame {
         if(jTable1.getModel().getRowCount()!=0){
             DefaultTableModel model=(DefaultTableModel) jTable1.getModel();
             model.setRowCount(0);
+        }
+        if(jTable2.getModel().getRowCount()!=0){
+            DefaultTableModel model2=(DefaultTableModel) jTable2.getModel();
+            model2.setRowCount(0);
         }
          try {
             Product[] data=db.getProducts();
