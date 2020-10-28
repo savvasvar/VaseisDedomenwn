@@ -294,4 +294,20 @@ public class dbHandler {
         int affectedRows = statementIns.executeUpdate();
         return affectedRows;
     }
+    public void UpdateProductsAfterOrderComplete(Orders ord) throws SQLException{
+        connect();
+        String SQL = "update products set amount=(select amount from products where product_name=?)-? where product_name=?";
+        statementIns= dbConnection.prepareStatement(SQL);
+        for(int i=0;i<ord.getProductList().size();i++){ 
+            statementIns.setString(1, ord.getProductList().get(i).getProductName());
+            statementIns.setInt(2, ord.getProductList().get(i).getProductAmount());
+            statementIns.setString(3, ord.getProductList().get(i).getProductName());
+            int affectedRows = statementIns.executeUpdate();
+            if(affectedRows>0){ 
+                 System.out.println("Stock update done rows affected"+affectedRows+"  In iteration "+i);
+            }
+           }
+        
+        
+    }
 }

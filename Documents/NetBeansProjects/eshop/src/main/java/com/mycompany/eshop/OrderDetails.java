@@ -216,6 +216,7 @@ public class OrderDetails extends javax.swing.JFrame {
                 } catch (IOException ex) {
                     Logger.getLogger(OrderDetails.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                db.UpdateProductsAfterOrderComplete(ord);
                 this.dispose();
             }
         } catch (SQLException ex) {
