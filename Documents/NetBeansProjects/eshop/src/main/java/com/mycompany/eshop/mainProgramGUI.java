@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.event.ChangeEvent;
@@ -35,6 +36,8 @@ public class mainProgramGUI extends javax.swing.JFrame {
     public mainProgramGUI() {
         initComponents();
         Panel.setVisible(false);
+        jTabbedPane1.setEnabledAt(3, false);
+        jTabbedPane1.setEnabledAt(2, false);
         jTabbedPane1.addChangeListener(new  ChangeListener(){
             public void stateChanged(ChangeEvent e) {
             
@@ -45,9 +48,21 @@ public class mainProgramGUI extends javax.swing.JFrame {
                 jButton1.setVisible(false);
                 jButton2.setVisible(false);
             }
-            if(userInfo.getRoleId() == 1){ /**I activate the log panel only for admins*/
-                Panel.setVisible(true);
+            if(jTabbedPane1.getSelectedIndex()==3){
+               List<String> ret=new ArrayList<String>();
+                try {
+                    ret=db.getRoles();
+                } catch (SQLException ex) {
+                    Logger.getLogger(mainProgramGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                DefaultComboBoxModel model = new DefaultComboBoxModel(ret.toArray());
+                jComboBox1.setModel(model);
             }
+//            if(userInfo.getRoleId() == 1){ /**I activate the log panel only for admins*/
+//                Panel.setVisible(true);
+//                jTabbedPane1.setEnabledAt(3, true);
+//                jTabbedPane1.setEnabledAt(2, true);
+//            }
         }
         });
         jTable2.addMouseListener(new MouseAdapter(){
@@ -100,6 +115,12 @@ public class mainProgramGUI extends javax.swing.JFrame {
         log_panel = new javax.swing.JPanel();
         Panel = new javax.swing.JScrollPane();
         log_Table = new javax.swing.JTable();
+        jPanel3 = new javax.swing.JPanel();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jButton3 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         header_panel = new javax.swing.JPanel();
@@ -191,7 +212,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 427, Short.MAX_VALUE)
+            .addGap(0, 433, Short.MAX_VALUE)
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
@@ -225,6 +246,56 @@ public class mainProgramGUI extends javax.swing.JFrame {
         );
 
         jTabbedPane1.addTab("Log", log_panel);
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabel2.setText("Role:");
+
+        jLabel3.setText("User:");
+
+        jButton3.setText("Set Role");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(10, 10, 10)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton3)
+                            .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap(370, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jButton3)
+                .addContainerGap(324, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Group Managment", jPanel3);
 
         jButton1.setText("New Product");
         jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -313,6 +384,11 @@ public class mainProgramGUI extends javax.swing.JFrame {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         TableDataHandler();
+        if(userInfo.getRoleId() == 1){ /**I activate the log panel only for admins*/
+                Panel.setVisible(true);
+                jTabbedPane1.setEnabledAt(3, true);
+                jTabbedPane1.setEnabledAt(2, true);
+            }
        
     }//GEN-LAST:event_formWindowOpened
 
@@ -363,6 +439,17 @@ public class mainProgramGUI extends javax.swing.JFrame {
             Logger.getLogger(mainProgramGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        try {
+            int afR=db.setRoleToUser(jTextField1.getText(), jComboBox1.getSelectedIndex()+1);
+            if(afR>0){
+                System.out.println("done "+afR+" and index "+jComboBox1.getSelectedIndex()+1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(mainProgramGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -432,14 +519,20 @@ public class mainProgramGUI extends javax.swing.JFrame {
     private javax.swing.JLabel icon_label;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JTable log_Table;
     private javax.swing.JPanel log_panel;
     private javax.swing.JLabel username_label;

@@ -253,7 +253,7 @@ public class registerForm extends javax.swing.JFrame {
                   statementIns.setString(1, jTextField1.getText());
                   statementIns.setString(2, hashedPass);
                   statementIns.setString(3, jTextField2.getText());
-                  statementIns.setInt(4, 1);
+                  statementIns.setInt(4, 3);
                   int affectedRows = statementIns.executeUpdate();
               } catch (SQLException ex) {
                   Logger.getLogger(registerForm.class.getName()).log(Level.SEVERE, null, ex);

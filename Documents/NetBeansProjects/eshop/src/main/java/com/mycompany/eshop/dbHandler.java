@@ -307,7 +307,25 @@ public class dbHandler {
                  System.out.println("Stock update done rows affected"+affectedRows+"  In iteration "+i);
             }
            }
-        
-        
+    }
+    
+    public List<String> getRoles() throws SQLException{
+        connect();
+        List<String> ret=new ArrayList<String>();
+        String selectString2 = "select role_name from roles";
+        rs=statement.executeQuery(selectString2);
+        while(rs.next()){ 
+            ret.add(rs.getString("role_name"));
+        }
+        return ret;
+    }
+    public int setRoleToUser(String user,int rid) throws SQLException{
+        connect();
+        String SQL = "UPDATE users SET role_id=? where username=?";
+        statementIns= dbConnection.prepareStatement(SQL);
+        statementIns.setInt(1, rid);
+        statementIns.setString(2, user);
+        int affectedRows = statementIns.executeUpdate();
+        return affectedRows;
     }
 }
