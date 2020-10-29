@@ -110,6 +110,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        logButtonGroup = new javax.swing.ButtonGroup();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -120,6 +121,10 @@ public class mainProgramGUI extends javax.swing.JFrame {
         log_panel = new javax.swing.JPanel();
         Panel = new javax.swing.JScrollPane();
         log_Table = new javax.swing.JTable();
+        allButton = new javax.swing.JRadioButton();
+        ordersRadioButton = new javax.swing.JRadioButton();
+        usersRadionButton = new javax.swing.JRadioButton();
+        ordersRadionButton = new javax.swing.JRadioButton();
         jPanel3 = new javax.swing.JPanel();
         jComboBox1 = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
@@ -233,26 +238,49 @@ public class mainProgramGUI extends javax.swing.JFrame {
 
         log_Table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "OPERATION", "TIME", "UserID", "Product ID", "Product Name", "New User Id", "New User Namel", "order ID", "Customer ID", "Completed Order"
             }
         ));
         Panel.setViewportView(log_Table);
+
+        allButton.setText("ALL");
+
+        ordersRadioButton.setText("Products");
+
+        usersRadionButton.setText("Users");
+
+        ordersRadionButton.setText("Orders");
 
         javax.swing.GroupLayout log_panelLayout = new javax.swing.GroupLayout(log_panel);
         log_panel.setLayout(log_panelLayout);
         log_panelLayout.setHorizontalGroup(
             log_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(Panel, javax.swing.GroupLayout.DEFAULT_SIZE, 509, Short.MAX_VALUE)
+            .addGroup(log_panelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(allButton)
+                .addGap(18, 18, 18)
+                .addComponent(ordersRadioButton)
+                .addGap(18, 18, 18)
+                .addComponent(usersRadionButton)
+                .addGap(18, 18, 18)
+                .addComponent(ordersRadionButton)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         log_panelLayout.setVerticalGroup(
             log_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(Panel, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, log_panelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(log_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(allButton)
+                    .addComponent(ordersRadioButton)
+                    .addComponent(usersRadionButton)
+                    .addComponent(ordersRadionButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Panel, javax.swing.GroupLayout.DEFAULT_SIZE, 402, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Log", log_panel);
@@ -565,6 +593,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane Panel;
+    private javax.swing.JRadioButton allButton;
     private javax.swing.JPanel header_panel;
     private javax.swing.JLabel icon_label;
     private javax.swing.JButton jButton1;
@@ -588,8 +617,12 @@ public class mainProgramGUI extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.ButtonGroup logButtonGroup;
     private javax.swing.JTable log_Table;
     private javax.swing.JPanel log_panel;
+    private javax.swing.JRadioButton ordersRadioButton;
+    private javax.swing.JRadioButton ordersRadionButton;
     private javax.swing.JLabel username_label;
+    private javax.swing.JRadioButton usersRadionButton;
     // End of variables declaration//GEN-END:variables
 }
