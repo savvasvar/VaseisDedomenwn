@@ -472,7 +472,10 @@ public class mainProgramGUI extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    public void rolesDropDownRefresh() throws SQLException{
+        DefaultComboBoxModel model = new DefaultComboBoxModel(db.refresh());
+        jComboBox1.setModel(model);
+    }
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         TableDataHandler();
         if(userInfo.getRoleId() == 1){ /**I activate the log panel only for admins*/
@@ -552,6 +555,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
         }
         try {
             jList1.setListData(db.refresh());
+            rolesDropDownRefresh();
         } catch (SQLException ex) {
             Logger.getLogger(mainProgramGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -570,7 +574,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
                      }
                     jList1.setListData(listAr);
                     jTextField2.setText(null);
-                    
+                    rolesDropDownRefresh();
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(mainProgramGUI.class.getName()).log(Level.SEVERE, null, ex);
@@ -589,6 +593,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
         }
         try {
             jList1.setListData(db.refresh());
+            rolesDropDownRefresh();
         } catch (SQLException ex) {
             Logger.getLogger(mainProgramGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
