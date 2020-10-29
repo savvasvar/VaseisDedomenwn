@@ -55,7 +55,7 @@ public class dbHandler {
     //Closes db connection
     public void disconnect() throws SQLException{
          statement.close();
-         dbConnection.close();
+//         dbConnection.close();
     }
     /* 
         -Checkes database for how many product id exist
@@ -93,7 +93,7 @@ public class dbHandler {
             
             i++;  
         }
-        disconnect();
+        
         return data;
     }
     public Product[] getFilteredProducts(int filterNum) throws SQLException{
@@ -133,7 +133,7 @@ public class dbHandler {
 
                     i++;  
                 }
-                disconnect();
+                
                 break;                
             case 2:
                 numOfProducts=0;
@@ -166,7 +166,7 @@ public class dbHandler {
 
                     j++;  
                 }
-                disconnect();
+                
                 break;                
                 
         }
@@ -194,6 +194,7 @@ public class dbHandler {
         while(rs.next()){
             name=rs.getString("product_name");
         }
+        
         return name;
     }
 
@@ -264,6 +265,7 @@ public class dbHandler {
             for(int i=0;i<fret.size();i++){
                 retArray[i]=fret.get(i);
             }
+            
         return retArray;
     }
     public float getProductsPrice(String name) throws SQLException{
@@ -274,6 +276,7 @@ public class dbHandler {
         while(rs.next()){
             price=rs.getFloat("price");
         }
+        
         return price;
     }
     public int getBarcode(String name) throws SQLException{
@@ -284,6 +287,7 @@ public class dbHandler {
         while(rs.next()){
             barcode=rs.getInt("barcode");
         }
+        
         return barcode;
     }
     public int  OrderSetComplete(int id) throws SQLException{
@@ -292,6 +296,7 @@ public class dbHandler {
         statementIns= dbConnection.prepareStatement(SQL);
         statementIns.setInt(1, id);
         int affectedRows = statementIns.executeUpdate();
+        
         return affectedRows;
     }
     public void UpdateProductsAfterOrderComplete(Orders ord) throws SQLException{
@@ -312,13 +317,71 @@ public class dbHandler {
     public List<String> getRoles() throws SQLException{
         connect();
         List<String> ret=new ArrayList<String>();
-        String selectString2 = "select role_name from roles";
+        String selectString2 = "select role_name from roles order by role_id ASC";
         rs=statement.executeQuery(selectString2);
         while(rs.next()){ 
             ret.add(rs.getString("role_name"));
         }
+
         return ret;
     }
+    public int addRole(String rname) throws SQLException{
+        connect();
+        String SQL = "INSERT INTO roles(role_name) VALUES(?)";
+        statementIns= dbConnection.prepareStatement(SQL);
+        statementIns.setString(1, rname);
+        int affectedRows = statementIns.executeUpdate();
+
+        return affectedRows;        
+    }
+    public int ReOrderUP(int inp,String nf,String ns) throws SQLException{
+        int affectedRows=0;
+        connect();
+        String SQL = "UPDATE roles SET role_name=? where role_id=?";
+        statementIns= dbConnection.prepareStatement(SQL);
+        statementIns.setString(1, nf);
+        statementIns.setInt(2, inp-1);
+        affectedRows = statementIns.executeUpdate();
+        System.out.println("\nRows "+affectedRows+" "+nf+" "+(inp-1));
+        statementIns.setString(1, ns);
+        statementIns.setInt(2, inp);
+        affectedRows = statementIns.executeUpdate();
+        System.out.println("\nRows "+affectedRows+" "+nf+" "+inp);
+
+        return affectedRows;    
+    }
+    public int ReOrderDown(int inp,String nf,String ns) throws SQLException{
+        int affectedRows=0;
+        connect();
+        String SQL = "UPDATE roles SET role_name=? where role_id=?";
+        statementIns= dbConnection.prepareStatement(SQL);
+        statementIns.setString(1, nf);
+        statementIns.setInt(2, inp+1);
+        affectedRows = statementIns.executeUpdate();
+        System.out.println("\nRows "+affectedRows+" "+nf+" "+(inp+1));
+        statementIns.setString(1, ns);
+        statementIns.setInt(2, inp);
+        affectedRows = statementIns.executeUpdate();
+        System.out.println("\nRows "+affectedRows+" "+ns+" "+inp);
+
+        return affectedRows;    
+    }
+    public String[] refresh() throws SQLException{
+        connect();
+        List<String> ord=new ArrayList<String>();
+        String selectString2 = "select role_name from roles order by role_id ASC";
+        rs=statement.executeQuery(selectString2);
+        while(rs.next()){ 
+            ord.add(rs.getString("role_name"));
+//            System.out.println(rs.getString("role_name"));
+        }
+        String[] ret=new String[ord.size()];
+        for(int i=0;i<ord.size();i++){
+            ret[i]=ord.get(i);
+        }
+        return ret;
+    }
+    
     public int setRoleToUser(String user,int rid) throws SQLException{
         connect();
         String SQL = "UPDATE users SET role_id=? where username=?";
@@ -326,6 +389,7 @@ public class dbHandler {
         statementIns.setInt(1, rid);
         statementIns.setString(2, user);
         int affectedRows = statementIns.executeUpdate();
+
         return affectedRows;
     }
 }
