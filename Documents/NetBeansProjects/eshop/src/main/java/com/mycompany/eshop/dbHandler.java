@@ -392,4 +392,45 @@ public class dbHandler {
 
         return affectedRows;
     }
+    
+    public LogPanel[] getLogPanel() throws SQLException{
+        connect();
+        int numOfLogPanel=0;
+        String selectString = "select count(*) from products_log_table";
+        rs=statement.executeQuery(selectString);
+        while(rs.next()){
+            numOfLogPanel=rs.getInt("count");
+        }
+        LogPanel[] data=new LogPanel[numOfLogPanel];
+        selectString="select * from products_log_table";
+        rs=statement.executeQuery(selectString);
+        int i=0;
+        while(rs.next()){
+            String op=rs.getString("operation");
+            Date date=rs.getDate("stamp");
+                DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
+                String strDate=dateFormat.format(date);
+            int id=rs.getInt("product_id");
+            String name=rs.getString("product_name");
+            String description=rs.getString("description");
+            int amount=rs.getInt("amount");
+            float price=rs.getFloat("price");
+            
+            
+            LogPanel log=new LogPanel();
+            log.setOP(op);
+            log.setDate(strDate);
+            log.setPname(name);//////////
+            log.setAmount(amount);
+            log.setPID(id);
+            log.setPrice(price);
+            log.setDescription(description);
+            
+            data[i]=log;
+            
+            i++;  
+        }
+        
+        return data;
+    }
 }

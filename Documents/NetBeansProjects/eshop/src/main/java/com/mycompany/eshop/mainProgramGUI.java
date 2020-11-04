@@ -247,6 +247,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
         Panel.setViewportView(log_Table);
 
         logButtonGroup.add(productsRadioButton);
+        productsRadioButton.setSelected(true);
         productsRadioButton.setText("Products");
 
         logButtonGroup.add(usersRadioButton1);
@@ -268,9 +269,9 @@ public class mainProgramGUI extends javax.swing.JFrame {
             log_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, log_panelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(log_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(productsRadioButton)
-                    .addComponent(usersRadioButton1))
+                .addGroup(log_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(usersRadioButton1)
+                    .addComponent(productsRadioButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(Panel, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE))
         );
@@ -631,6 +632,10 @@ public class mainProgramGUI extends javax.swing.JFrame {
             DefaultTableModel model2=(DefaultTableModel) jTable2.getModel();
             model2.setRowCount(0);
         }
+        if(log_Table.getModel().getRowCount()!=0){
+            DefaultTableModel modellog=(DefaultTableModel) log_Table.getModel();
+            modellog.setRowCount(0);
+        }
          try {
             Product[] data=db.getProducts();
             DefaultTableModel tblModel=(DefaultTableModel) jTable1.getModel();
@@ -644,6 +649,12 @@ public class mainProgramGUI extends javax.swing.JFrame {
                 ordersList.add(ord[i]);
                 String[] ordString=ord[i].getOrdersString();
                 tblModel2.addRow(ordString);
+            }
+            LogPanel[] log=db.getLogPanel();
+            DefaultTableModel tblModellog=(DefaultTableModel) log_Table.getModel();
+            for(int i=0;i<log.length;i++){
+                String logString[]=log[i].getLogPanelString();
+                tblModellog.addRow(logString);
             }
         } catch (SQLException ex) {
             Logger.getLogger(mainProgramGUI.class.getName()).log(Level.SEVERE, null, ex);
