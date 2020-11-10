@@ -660,6 +660,11 @@ public class mainProgramGUI extends javax.swing.JFrame {
             Logger.getLogger(mainProgramGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public void logout() throws ClassNotFoundException, SQLException{
+        login lgin=new login();
+        lgin.setVisible(true);
+        this.dispose();
+    }
    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane Panel;
