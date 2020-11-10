@@ -57,6 +57,21 @@ public class dbHandler {
          statement.close();
 //         dbConnection.close();
     }
+    public Product getProduct(int id) throws SQLException{
+        connect();
+        Product pr=new Product();
+        String selectString = "select * from products where product_id="+id;
+        rs=statement.executeQuery(selectString);
+        while(rs.next()){
+           pr.setName(rs.getString("product_name"));
+           pr.setBarcode(rs.getInt("barcode"));
+           pr.setAmount(rs.getInt("amount"));
+           pr.setPrice(rs.getFloat("price"));
+           pr.setDescription(rs.getString("description"));
+        }
+        pr.setID(id);
+        return pr;
+    }
     /* 
         -Checkes database for how many product id exist
         -Creates an array of Product objects and return it 
@@ -70,7 +85,7 @@ public class dbHandler {
             numOfProducts=rs.getInt("count");
         }
         Product[] data=new Product[numOfProducts];
-        selectString="select * from products";
+        selectString="select * from products order by product_id ASC";
         rs=statement.executeQuery(selectString);
         int i=0;
         while(rs.next()){
@@ -312,6 +327,34 @@ public class dbHandler {
                  System.out.println("Stock update done rows affected"+affectedRows+"  In iteration "+i);
             }
            }
+    }
+    
+    public List<String> getSuppliers() throws SQLException{
+        connect();
+        List<String> ret=new ArrayList<String>();
+        String selectString2 = "select sname from suppliers order by sid ASC";
+        rs=statement.executeQuery(selectString2);
+        while(rs.next()){ 
+            ret.add(rs.getString("sname"));
+        }
+
+        return ret;
+    }
+    
+    public int reStock(int amount,int newAm,int pid,int sID) throws SQLException{
+        connect();
+        String SQL = "INSERT INTO restock(pid,amount,supplier) VALUES(?,?,?)";
+        statementIns= dbConnection.prepareStatement(SQL);
+        statementIns.setInt(1, pid);
+        statementIns.setInt(2, amount);
+        statementIns.setInt(3, sID);
+        int affectedRows = statementIns.executeUpdate();
+        String SQL1 = "UPDATE products SET amount=? where product_id=?";
+        statementIns= dbConnection.prepareStatement(SQL1);
+        statementIns.setInt(1, newAm);
+        statementIns.setInt(2, pid);
+        affectedRows = statementIns.executeUpdate();
+        return affectedRows;
     }
     
     public List<String> getRoles() throws SQLException{

@@ -90,6 +90,32 @@ public class mainProgramGUI extends javax.swing.JFrame {
                 }
             }
         });
+        jTable1.addMouseListener(new MouseAdapter(){
+            public void mouseClicked(MouseEvent me){
+                if(me.getClickCount()== 2){
+                    JTable target = (JTable)me.getSource();
+                    int row = target.getSelectedRow();
+                    System.out.println(row);
+//                    System.out.println("what"+jTable1.getModel().getValueAt(row, 0));
+                    ProductsRestock prdR=new ProductsRestock();
+                    prdR.setVisible(true);
+                    int id=Integer.parseInt(jTable1.getModel().getValueAt(row, 0).toString());
+                    try {
+                        Product pr=db.getProduct(id);
+                        prdR.setProduct(pr);
+                    } catch (SQLException ex) {
+                        Logger.getLogger(mainProgramGUI.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    prdR.addWindowListener(new java.awt.event.WindowAdapter(){
+                        @Override
+                        public void windowClosing(java.awt.event.WindowEvent windowEvent){
+                            TableDataHandler();
+                            System.out.println("I did catch the event");
+                        }
+                    } );
+                }
+            }
+        });
     }
     public void userInfo(user user){
         userInfo.setEmail(user.getemail());
