@@ -337,8 +337,15 @@ public class dbHandler {
         while(rs.next()){ 
             ret.add(rs.getString("sname"));
         }
-
         return ret;
+    }
+    public int insertSupplier(String name) throws SQLException{
+        connect();
+        String SQL = "INSERT INTO suppliers(sname) VALUES(?)";
+        statementIns= dbConnection.prepareStatement(SQL);
+        statementIns.setString(1, name);
+        int affectedRows = statementIns.executeUpdate();
+        return affectedRows;
     }
     
     public int reStock(int amount,int newAm,int pid,int sID) throws SQLException{
@@ -368,6 +375,8 @@ public class dbHandler {
 
         return ret;
     }
+    
+    
     public int addRole(String rname) throws SQLException{
         connect();
         String SQL = "INSERT INTO roles(role_name) VALUES(?)";
