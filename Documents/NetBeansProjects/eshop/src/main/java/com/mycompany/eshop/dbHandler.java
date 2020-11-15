@@ -5,13 +5,6 @@
  */
 package com.mycompany.eshop;
 
-import static com.mycompany.eshop.login.dbConnection;
-import static com.mycompany.eshop.login.driverClassName;
-import static com.mycompany.eshop.login.passwd;
-import static com.mycompany.eshop.login.rs;
-import static com.mycompany.eshop.login.statement;
-import static com.mycompany.eshop.login.url;
-import static com.mycompany.eshop.login.username;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -22,7 +15,6 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;

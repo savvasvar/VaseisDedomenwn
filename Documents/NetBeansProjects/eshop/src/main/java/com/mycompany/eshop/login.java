@@ -21,13 +21,13 @@ public class login extends javax.swing.JFrame {
     /**
      * Creates new form login
      */
-    static String     driverClassName = "org.postgresql.Driver" ;
-    static String     url = "jdbc:postgresql://dblabs.it.teithe.gr:5432/it154474" ;
-    static Connection dbConnection = null;
-    static String     username = "it154474";
-    static String     passwd = "test123";
-    static Statement statement=null;
-    static ResultSet rs =null;
+//    static String     driverClassName = "org.postgresql.Driver" ;
+//    static String     url = "jdbc:postgresql://dblabs.it.teithe.gr:5432/it154474" ;
+//    static Connection dbConnection = null;
+//    static String     username = "it154474";
+//    static String     passwd = "test123";
+//    static Statement statement=null;
+//    static ResultSet rs =null;
     
     String salt;
     boolean isCorrect;
@@ -37,9 +37,9 @@ public class login extends javax.swing.JFrame {
     public login() throws ClassNotFoundException, SQLException {
         initComponents();
         jLabel4.setVisible(false);
-        Class.forName (driverClassName);
-        dbConnection = DriverManager.getConnection (url, username, passwd);
-        statement = dbConnection.createStatement();
+//        Class.forName (driverClassName);
+//        dbConnection = DriverManager.getConnection (url, username, passwd);
+//        statement = dbConnection.createStatement();
         jPasswordField1.addKeyListener(new KeyAdapter(){
             public void keyPressed(KeyEvent evt)
                 {

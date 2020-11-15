@@ -5,15 +5,6 @@
  */
 package com.mycompany.eshop;
 
-import static com.mycompany.eshop.login.dbConnection;
-import static com.mycompany.eshop.login.driverClassName;
-import static com.mycompany.eshop.login.passwd;
-import static com.mycompany.eshop.login.rs;
-import static com.mycompany.eshop.login.statement;
-import static com.mycompany.eshop.login.url;
-import static com.mycompany.eshop.login.username;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -24,10 +15,7 @@ import java.sql.Statement;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
 
 /**
  *
