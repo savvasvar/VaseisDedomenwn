@@ -57,6 +57,36 @@ public class dbHandler {
          statement.close();
 //         dbConnection.close();
     }
+    
+    public boolean login(String username,String password) throws SQLException{
+        connect();
+        boolean ret=false;
+        String selectString = "select login('"+username+"','"+password+"')";
+        rs=statement.executeQuery(selectString);
+        while(rs.next()){
+            ret=rs.getBoolean("login");
+        }
+        return ret;
+    }
+    
+    public user getUser(String username) throws SQLException{
+        connect();
+        user usr=new user();
+        String selectUser="select username,email,user_id,role_id from users where username='"+username+"'";
+        rs=statement.executeQuery(selectUser);
+        while(rs.next()){
+          String usrn=rs.getString("username");
+          usr.setUsername(usrn);
+          String email=rs.getString("email");
+          usr.setEmail(email);
+          int user_id=rs.getInt("user_id");
+          usr.setUserId(user_id);
+          int role_id=rs.getInt("role_id");
+          usr.setRoleId(role_id);
+        }
+        return usr;
+    }
+    
     public Product getProduct(int id) throws SQLException{
         connect();
         Product pr=new Product();

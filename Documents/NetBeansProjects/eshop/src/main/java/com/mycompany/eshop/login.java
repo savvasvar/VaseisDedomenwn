@@ -31,6 +31,7 @@ public class login extends javax.swing.JFrame {
     
     String salt;
     boolean isCorrect;
+    dbHandler db=new dbHandler();
     
     
     public login() throws ClassNotFoundException, SQLException {
@@ -44,7 +45,11 @@ public class login extends javax.swing.JFrame {
                 {
                     if(evt.getKeyCode() == KeyEvent.VK_ENTER)
                     {
-                        login();
+                        try {
+                            login();
+                        } catch (InvalidKeySpecException ex) {
+                            Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
                 }
         });
@@ -191,55 +196,28 @@ public class login extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowClosed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       login();
+        try {
+            login();
+        } catch (InvalidKeySpecException ex) {
+            Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    public void login(){
-         user logedUser=new user();
-                                                      
+    public void login() throws InvalidKeySpecException{
+         user logedUser=new user();                                           
             try {
-                String selectString = "select user_password from users where username='"+jTextField1.getText()+"'";
-//                System.out.println(selectString);
-                rs=statement.executeQuery(selectString);
-                while(rs.next()){
-                      String user_password=rs.getString("user_password");
-                    try {
-//                        String hashed=PasswordUtils.hashPassword(jPasswordField1.getText(), salt).get();
-//                        System.out.println(jTextField1.getText()+"\n"+user_password+"\n"+salt);
-                        isCorrect=PasswordUtils.verifyPassword(jPasswordField1.getText(), user_password, salt);
-//                        System.out.println(isCorrect);
-                    } catch (InvalidKeySpecException ex) {
-                        Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-
-                }
+                String hashed=PasswordUtils.hashPassword(jPasswordField1.getText(), salt).get();
+                isCorrect=db.login(jTextField1.getText(), hashed);
                 if(isCorrect){
-                            jLabel4.setVisible(false);
-//                            System.out.println("I am here");
-                            String selectUser="select username,email,user_id,role_id from users where username='"+jTextField1.getText()+"'";
-                            rs=statement.executeQuery(selectUser);
-                            while(rs.next()){
-                                String username=rs.getString("username");
-                                logedUser.setUsername(username);
-                                String email=rs.getString("email");
-                                logedUser.setEmail(email);
-                                int user_id=rs.getInt("user_id");
-                                logedUser.setUserId(user_id);
-                                 int role_id=rs.getInt("role_id");
-                                logedUser.setRoleId(role_id);
-//                                System.out.println(username+" "+user_id);
-                                mainProgramGUI gui=new mainProgramGUI();
-                                gui.userInfo(logedUser);
-                                gui.setVisible(true);
-                                this.dispose();
-                            }
-                            
-
-                         }else{
-                            jLabel4.setVisible(true);
-                        }
-
-
+                  jLabel4.setVisible(false);
+                  logedUser=db.getUser(jTextField1.getText());
+                  mainProgramGUI gui=new mainProgramGUI();
+                  gui.userInfo(logedUser);
+                  gui.setVisible(true);
+                  this.dispose();
+                }else{
+                    jLabel4.setVisible(true);
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
             }
