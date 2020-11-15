@@ -154,8 +154,6 @@ public class mainProgramGUI extends javax.swing.JFrame {
         log_panel = new javax.swing.JPanel();
         Panel = new javax.swing.JScrollPane();
         log_Table = new javax.swing.JTable();
-        productsRadioButton = new javax.swing.JRadioButton();
-        usersRadioButton1 = new javax.swing.JRadioButton();
         jPanel3 = new javax.swing.JPanel();
         jComboBox1 = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
@@ -276,39 +274,20 @@ public class mainProgramGUI extends javax.swing.JFrame {
 
             },
             new String [] {
-                "OPERATION", "TIME", "Product ID", "Product Name", "Amount", "Price", "Description"
+                "OPERATION", "TIME", "Product ID", "Product Name", "Description", "Amount", "Price"
             }
         ));
         Panel.setViewportView(log_Table);
-
-        logButtonGroup.add(productsRadioButton);
-        productsRadioButton.setSelected(true);
-        productsRadioButton.setText("Products");
-
-        logButtonGroup.add(usersRadioButton1);
-        usersRadioButton1.setText("Users");
 
         javax.swing.GroupLayout log_panelLayout = new javax.swing.GroupLayout(log_panel);
         log_panel.setLayout(log_panelLayout);
         log_panelLayout.setHorizontalGroup(
             log_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(Panel, javax.swing.GroupLayout.DEFAULT_SIZE, 509, Short.MAX_VALUE)
-            .addGroup(log_panelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(productsRadioButton)
-                .addGap(18, 18, 18)
-                .addComponent(usersRadioButton1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         log_panelLayout.setVerticalGroup(
             log_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, log_panelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(log_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(usersRadioButton1)
-                    .addComponent(productsRadioButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(Panel, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE))
+            .addComponent(Panel, javax.swing.GroupLayout.DEFAULT_SIZE, 522, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Log", log_panel);
@@ -856,8 +835,6 @@ public class mainProgramGUI extends javax.swing.JFrame {
     private javax.swing.ButtonGroup logButtonGroup;
     private javax.swing.JTable log_Table;
     private javax.swing.JPanel log_panel;
-    private javax.swing.JRadioButton productsRadioButton;
     private javax.swing.JLabel username_label;
-    private javax.swing.JRadioButton usersRadioButton1;
     // End of variables declaration//GEN-END:variables
 }
