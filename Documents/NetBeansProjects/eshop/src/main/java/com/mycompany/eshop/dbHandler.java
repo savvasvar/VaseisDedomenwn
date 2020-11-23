@@ -50,6 +50,8 @@ public class dbHandler {
 //         dbConnection.close();
     }
     
+    //Login function gets usernmae and password String and excecutes postgress database function login()
+    //returns true if login credentials are right
     public boolean login(String username,String password) throws SQLException{
         connect();
         boolean ret=false;
@@ -61,6 +63,7 @@ public class dbHandler {
         return ret;
     }
     
+    //Gets username string and returns user object if user was found
     public user getUser(String username) throws SQLException{
         connect();
         user usr=new user();
@@ -79,6 +82,8 @@ public class dbHandler {
         return usr;
     }
     
+    
+    //Get product_id integer and returns product object if found
     public Product getProduct(int id) throws SQLException{
         connect();
         Product pr=new Product();
@@ -110,6 +115,7 @@ public class dbHandler {
         return usenameList;
     }
     
+    //Get username string and returns the role_id of user so it is easier to match in role management combobox
     public int getRolePos(String username) throws SQLException{
         connect();
         int ret=0;
@@ -122,6 +128,7 @@ public class dbHandler {
     }
     
     
+    //Returns an array of all products
     public Product[] getProducts() throws SQLException{
         connect();
         int numOfProducts=0;
@@ -157,6 +164,9 @@ public class dbHandler {
         
         return data;
     }
+    
+    //Gets an integer which coresponds to filter type
+    //Returns a filtered array of products
     public Product[] getFilteredProducts(int filterNum) throws SQLException{
         connect();
         int numofelement=0;
@@ -237,6 +247,8 @@ public class dbHandler {
         }
         return ret;
     }
+    
+    //Gets customer_id as an integer and returns Customer name string
     public String getCustomerName(int id) throws SQLException{
         connect();
         String name="";
@@ -247,6 +259,8 @@ public class dbHandler {
         }
         return name;
     }
+    
+    //Gets product_id as an integer and returns product name string
     public String getProductName(int id) throws SQLException{
         connect();
         String name="";
@@ -259,6 +273,8 @@ public class dbHandler {
         return name;
     }
 
+    
+    //Returns an array of orders where orders with the same order_id are unified in one order
     public Orders[] getOrders() throws SQLException{
         connect();
         int numOfOrders=0;
@@ -329,6 +345,9 @@ public class dbHandler {
             
         return retArray;
     }
+    
+    
+    //Gets products name and return a float that corespons to products price
     public float getProductsPrice(String name) throws SQLException{
         connect();
         float price=0;
@@ -340,6 +359,8 @@ public class dbHandler {
         
         return price;
     }
+    
+    //Gets a string of products name and returns the int price of barcode
     public int getBarcode(String name) throws SQLException{
         connect();
         int barcode=0;
@@ -351,6 +372,8 @@ public class dbHandler {
         
         return barcode;
     }
+    
+    //Gets an integer and set the order_id with the same number to true that set the order as completed
     public int  OrderSetComplete(int id) throws SQLException{
         connect();
         String SQL = "UPDATE orders SET completed=true where order_id=?";
@@ -360,6 +383,8 @@ public class dbHandler {
         
         return affectedRows;
     }
+    
+    //Gets an order object and updates the ammount of products when the order completes (subtraction)
     public void UpdateProductsAfterOrderComplete(Orders ord) throws SQLException{
         connect();
         String SQL = "update products set amount=(select amount from products where product_name=?)-? where product_name=?";
@@ -375,6 +400,8 @@ public class dbHandler {
            }
     }
     
+    
+    //Returns a String List of the suppliers
     public List<String> getSuppliers() throws SQLException{
         connect();
         List<String> ret=new ArrayList<String>();
@@ -385,6 +412,8 @@ public class dbHandler {
         }
         return ret;
     }
+    
+    //Gets a string of supplier name and inserts it to the database
     public int insertSupplier(String name) throws SQLException{
         connect();
         String SQL = "INSERT INTO suppliers(sname) VALUES(?)";
@@ -394,6 +423,8 @@ public class dbHandler {
         return affectedRows;
     }
     
+    
+    //Gets product current amount,new amount,product id and supplier id and restocks the product (sets new product amount)
     public int reStock(int amount,int newAm,int pid,int sID) throws SQLException{
         connect();
         String SQL = "INSERT INTO restock(pid,amount,supplier) VALUES(?,?,?)";
@@ -410,6 +441,7 @@ public class dbHandler {
         return affectedRows;
     }
     
+    //Returns  a String List of user Roles
     public List<String> getRoles() throws SQLException{
         connect();
         List<String> ret=new ArrayList<String>();
@@ -422,7 +454,7 @@ public class dbHandler {
         return ret;
     }
     
-    
+    //Gets strin name and inserts it to database
     public int addRole(String rname) throws SQLException{
         connect();
         String SQL = "INSERT INTO roles(role_name) VALUES(?)";
@@ -432,6 +464,8 @@ public class dbHandler {
 
         return affectedRows;        
     }
+    
+    //Gets int integer of current posistion selected and copies the above's item name to current position and the name of curent item is set to the aboves value
     public int ReOrderUP(int inp,String nf,String ns) throws SQLException{
         int affectedRows=0;
         connect();
@@ -448,6 +482,8 @@ public class dbHandler {
 
         return affectedRows;    
     }
+    
+    //Gets int integer of current posistion selected and copies the belows's item name to current position and the name of curent item is set to the belows value
     public int ReOrderDown(int inp,String nf,String ns) throws SQLException{
         int affectedRows=0;
         connect();
@@ -464,6 +500,8 @@ public class dbHandler {
 
         return affectedRows;    
     }
+    
+    //Returns the array of roles 
     public String[] refresh() throws SQLException{
         connect();
         List<String> ord=new ArrayList<String>();
@@ -480,6 +518,8 @@ public class dbHandler {
         return ret;
     }
     
+    
+    //Gets username and the desired role(role_id) and set it to the user
     public int setRoleToUser(String user,int rid) throws SQLException{
         connect();
         String SQL = "UPDATE users SET role_id=? where username=?";
@@ -491,6 +531,8 @@ public class dbHandler {
         return affectedRows;
     }
     
+    
+    //Retruns an array of LogPanel
     public LogPanel[] getLogPanel() throws SQLException{
         connect();
         int numOfLogPanel=0;

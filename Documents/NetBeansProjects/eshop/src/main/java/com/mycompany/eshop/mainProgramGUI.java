@@ -39,6 +39,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
     
     public mainProgramGUI() {
         initComponents();
+        //components initialazation
         Panel.setVisible(false);
         jButton7.setOpaque(false);
         jButton7.setContentAreaFilled(false);
@@ -46,11 +47,15 @@ public class mainProgramGUI extends javax.swing.JFrame {
         jTabbedPane1.setEnabledAt(4, false);
         jTabbedPane1.setEnabledAt(3, false);
         jTabbedPane1.setEnabledAt(2, false);
+        
+        //Sets tooltips
         jTable1.setToolTipText("Double click to re-stock product");
         jTable2.setToolTipText("Double click to interact with orders");
+        
+        //Event listener for mainGui tabs switch
         jTabbedPane1.addChangeListener(new  ChangeListener(){
             public void stateChanged(ChangeEvent e) {
-            
+            //sets visible or not the new product and on stock buttons
             if(jTabbedPane1.getSelectedIndex()==0){
                 jButton1.setVisible(true);
                 jButton2.setVisible(true);
@@ -58,6 +63,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
                 jButton1.setVisible(false);
                 jButton2.setVisible(false);
             }
+            //If group management tab is selected retrieve data
             if(jTabbedPane1.getSelectedIndex()==3){
                List<String> ret=new ArrayList<String>();
                List<String> users=new ArrayList<String>();
@@ -80,6 +86,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
                     Logger.getLogger(mainProgramGUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+            //If suppliers tab is selected retrieve suppliers
             if(jTabbedPane1.getSelectedIndex()==4){
                SuppListRefresh();
             }
@@ -90,6 +97,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
 //            }
         }
         });
+        //Event listener if double click on orders table to open order details form
         jTable2.addMouseListener(new MouseAdapter(){
             public void mouseClicked(MouseEvent me){
                 if(me.getClickCount()== 2){
@@ -109,6 +117,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
                 }
             }
         });
+        //Event listener if double click on proudcts table to open restock form
         jTable1.addMouseListener(new MouseAdapter(){
             public void mouseClicked(MouseEvent me){
                 if(me.getClickCount()== 2){
@@ -136,6 +145,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
             }
         });
     }
+    //Populate user object
     public void userInfo(user user){
         userInfo.setEmail(user.getemail());
         userInfo.setUsername(user.getUsername());
@@ -633,6 +643,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
 
     }//GEN-LAST:event_jButton1MouseClicked
+    //Refreshes Suppliers list 
     public void SuppListRefresh(){
         List<String> ret=new ArrayList<String>();
                 try {
@@ -680,6 +691,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
             model.setRowCount(0);
         }
          try {
+             //filters proudct table
             Product[] data=db.getFilteredProducts(1);
             DefaultTableModel tblModel=(DefaultTableModel) jTable1.getModel();
             for(int i=0;i<data.length;i++){
@@ -693,6 +705,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         try {
+            //sets role to user
             int afR=db.setRoleToUser(jTextField1.getText(), jComboBox1.getSelectedIndex()+1);
             if(afR>0){
                 System.out.println("done "+afR+" and index "+jComboBox1.getSelectedIndex()+1);
@@ -701,7 +714,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
             Logger.getLogger(mainProgramGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton3ActionPerformed
-
+//Re Orders selected groud id one UP
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         try {
             int pos=jList1.getSelectedIndex();
@@ -717,7 +730,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
             Logger.getLogger(mainProgramGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton4ActionPerformed
-
+//Adds role to users
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         List<String> ret=new ArrayList<String>();
         if(!jTextField2.getText().isEmpty()){
@@ -738,7 +751,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jButton6ActionPerformed
-
+//Re Orders selected groud id one down
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         try {
             int pos=jList1.getSelectedIndex();
@@ -755,7 +768,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
             Logger.getLogger(mainProgramGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton5ActionPerformed
-
+//logsout
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         try {
             logout();
@@ -765,7 +778,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
             Logger.getLogger(mainProgramGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton7ActionPerformed
-
+//Inserts suppliers
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         try {
             if(!jTextPane1.getText().isEmpty()){
