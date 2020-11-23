@@ -98,6 +98,30 @@ public class dbHandler {
         -Checkes database for how many product id exist
         -Creates an array of Product objects and return it 
     */
+    public List<String> getUsers()throws SQLException{
+        connect();
+        var usenameList=new ArrayList<String>();
+        String selectString = "select username from users";
+        rs=statement.executeQuery(selectString);
+        while(rs.next()){
+            String username=rs.getString("username");
+            usenameList.add(username);
+        }
+        return usenameList;
+    }
+    
+    public int getRolePos(String username) throws SQLException{
+        connect();
+        int ret=0;
+        String selectString = "select role_id from users where username='"+username+"'";
+        rs=statement.executeQuery(selectString);
+        while(rs.next()){
+            ret=rs.getInt("role_id");
+        }
+        return ret-1;
+    }
+    
+    
     public Product[] getProducts() throws SQLException{
         connect();
         int numOfProducts=0;
