@@ -573,4 +573,12 @@ public class dbHandler {
         
         return data;
     }
+    public int deleteSupplier(String name) throws SQLException{
+        connect();
+        String SQL = "DELETE from suppliers where sname=?";
+        statementIns= dbConnection.prepareStatement(SQL);
+        statementIns.setString(1, name);
+        int affectedRows = statementIns.executeUpdate();
+        return affectedRows;
+    }
 }
