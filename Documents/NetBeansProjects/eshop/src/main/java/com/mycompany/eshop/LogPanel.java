@@ -27,7 +27,7 @@ public class LogPanel {
     }
     
     public void setAmount(int id){
-        this.amount = amount;
+        this.amount = id;
     }
     public int getAmount(){
         return this.amount;
