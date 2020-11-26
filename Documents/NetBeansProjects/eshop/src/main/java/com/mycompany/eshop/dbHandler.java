@@ -67,16 +67,16 @@ public class dbHandler {
     public user getUser(String username) throws SQLException{
         connect();
         user usr=new user();
-        String selectUser="select username,email,user_id,role_id from users where username='"+username+"'";
+        String selectUser="select * from getuser('"+username+"')";
         rs=statement.executeQuery(selectUser);
         while(rs.next()){
-          String usrn=rs.getString("username");
+          String usrn=rs.getString("usrname");
           usr.setUsername(usrn);
-          String email=rs.getString("email");
+          String email=rs.getString("mail");
           usr.setEmail(email);
-          int user_id=rs.getInt("user_id");
+          int user_id=rs.getInt("userid");
           usr.setUserId(user_id);
-          int role_id=rs.getInt("role_id");
+          int role_id=rs.getInt("roleid");
           usr.setRoleId(role_id);
         }
         return usr;
@@ -87,14 +87,14 @@ public class dbHandler {
     public Product getProduct(int id) throws SQLException{
         connect();
         Product pr=new Product();
-        String selectString = "select * from products where product_id="+id;
+        String selectString = "select * from getProduct("+id+")";
         rs=statement.executeQuery(selectString);
         while(rs.next()){
-           pr.setName(rs.getString("product_name"));
-           pr.setBarcode(rs.getInt("barcode"));
-           pr.setAmount(rs.getInt("amount"));
-           pr.setPrice(rs.getFloat("price"));
-           pr.setDescription(rs.getString("description"));
+           pr.setName(rs.getString("pname"));
+           pr.setBarcode(rs.getInt("code"));
+           pr.setAmount(rs.getInt("am"));
+           pr.setPrice(rs.getFloat("pri"));
+           pr.setDescription(rs.getString("descript"));
         }
         pr.setID(id);
         return pr;
@@ -106,10 +106,10 @@ public class dbHandler {
     public List<String> getUsers()throws SQLException{
         connect();
         var usenameList=new ArrayList<String>();
-        String selectString = "select username from users";
+        String selectString = "select * from getUsers()";
         rs=statement.executeQuery(selectString);
         while(rs.next()){
-            String username=rs.getString("username");
+            String username=rs.getString("uname");
             usenameList.add(username);
         }
         return usenameList;
@@ -119,10 +119,10 @@ public class dbHandler {
     public int getRolePos(String username) throws SQLException{
         connect();
         int ret=0;
-        String selectString = "select role_id from users where username='"+username+"'";
+        String selectString = "select getRolePos('"+username+"')";
         rs=statement.executeQuery(selectString);
         while(rs.next()){
-            ret=rs.getInt("role_id");
+            ret=rs.getInt("getrolepos");
         }
         return ret-1;
     }
@@ -132,13 +132,13 @@ public class dbHandler {
     public Product[] getProducts() throws SQLException{
         connect();
         int numOfProducts=0;
-        String selectString = "select count(*) from products";
+        String selectString = "select countProducts()";
         rs=statement.executeQuery(selectString);
         while(rs.next()){
-            numOfProducts=rs.getInt("count");
+            numOfProducts=rs.getInt("countproducts");
         }
         Product[] data=new Product[numOfProducts];
-        selectString="select * from products order by product_id ASC";
+        selectString="select * from getProducts()";
         rs=statement.executeQuery(selectString);
         int i=0;
         while(rs.next()){
@@ -175,20 +175,20 @@ public class dbHandler {
         switch(filterNum){
             case 1:
                 numOfProducts=0;
-                String selectString = "select count(*) from products where amount>0";
+                String selectString = "select * from countProductsOnStock()";
                 rs=statement.executeQuery(selectString);
                 while(rs.next()){
-                    numOfProducts=rs.getInt("count");
+                    numOfProducts=rs.getInt("countproductsonstock");
                 }
                 numofelement=numOfProducts;
-                selectString="select * from products where amount>0";
+                selectString="select * from getProductsOnStock()";
                 rs=statement.executeQuery(selectString);
                 int i=0;
                 while(rs.next()){
                     int id=rs.getInt("product_id");
                     String name=rs.getString("product_name");
                     String description=rs.getString("description");
-                    int amount=rs.getInt("amount");
+                    int amount=rs.getInt("mnt");
                     float price=rs.getFloat("price");
                     int barcode=rs.getInt("barcode");
 
@@ -207,36 +207,8 @@ public class dbHandler {
                 
                 break;                
             case 2:
-                numOfProducts=0;
-                String selectString2 = "select count(*) from products where amount>0";
-                rs=statement.executeQuery(selectString2);
-                while(rs.next()){
-                    numOfProducts=rs.getInt("count");
-                }
-                numofelement=numOfProducts;
-                selectString="select * from products where amount>0";
-                rs=statement.executeQuery(selectString);
-                int j=0;
-                while(rs.next()){
-                    int id=rs.getInt("product_id");
-                    String name=rs.getString("product_name");
-                    String description=rs.getString("description");
-                    int amount=rs.getInt("amount");
-                    float price=rs.getFloat("price");
-                    int barcode=rs.getInt("barcode");
-
-                    Product pro=new Product();
-                    pro.setName(name);
-                    pro.setAmount(amount);
-                    pro.setBarcode(barcode);
-                    pro.setID(id);
-                    pro.setPrice(price);
-                    pro.setDescription(description);
-
-                    proList.add(pro);
-
-                    j++;  
-                }
+                //placeHolder for 2nd filter
+                System.out.println("Sup");
                 
                 break;                
                 
@@ -252,10 +224,10 @@ public class dbHandler {
     public String getCustomerName(int id) throws SQLException{
         connect();
         String name="";
-        String selectString2 = "select username from customers where customer_id="+id;
+        String selectString2 = "select * from getCustomerName("+id+")";
         rs=statement.executeQuery(selectString2);
         while(rs.next()){
-            name=rs.getString("username");
+            name=rs.getString("getCustomername");
         }
         return name;
     }
@@ -264,10 +236,10 @@ public class dbHandler {
     public String getProductName(int id) throws SQLException{
         connect();
         String name="";
-        String selectString2 = "select product_name from products where product_id="+id;
+        String selectString2 = "select * from getProductName("+id+")";
         rs=statement.executeQuery(selectString2);
         while(rs.next()){
-            name=rs.getString("product_name");
+            name=rs.getString("getproductname");
         }
         
         return name;
@@ -279,10 +251,10 @@ public class dbHandler {
         connect();
         int numOfOrders=0;
         List<Orders> fret=new ArrayList();
-        String selectString = "select max(order_id) from orders";
+        String selectString = "select * from getMaxOrder();";
         rs=statement.executeQuery(selectString);
         while(rs.next()){
-            numOfOrders=rs.getInt("max");
+            numOfOrders=rs.getInt("getmaxorder");
         }
         Orders[] orders=new Orders[numOfOrders];
         for(int i=numOfOrders;i>0;i--){
@@ -291,24 +263,24 @@ public class dbHandler {
                 var orderList=new ArrayList<Order>();
                 Orders order=new Orders();
                 order.setOrderID(i);
-                String getOrders = "select * from orders where order_id="+i;
+                String getOrders = "select * from getorder("+i+")";
                 rs=statement.executeQuery(getOrders);
                 while(rs.next()){
                         Order ord=new Order();
-                        int order_id=rs.getInt("order_id");
+                        int order_id=rs.getInt("orderid");
                         ord.setOrderID(order_id);
-                        int product_amount=rs.getInt("amount");
+                        int product_amount=rs.getInt("mnt");
                         ord.setProductAmount(product_amount);
-                        int customer=rs.getInt("customer_id");
+                        int customer=rs.getInt("cid");
                         String cs=String.valueOf(customer);
                         custom=cs;
                         ord.setCustomer(cs);
-                        Date date=rs.getDate("timestamp");
+                        Date date=rs.getDate("timestamps");
                         DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
                         String strDate=dateFormat.format(date);
                         dateMOD=strDate;
                         ord.setDate(strDate);
-                        int product_name=rs.getInt("product_id");
+                        int product_name=rs.getInt("pid");
                         String pname=String.valueOf(product_name);
                         ord.setProductName(pname);
                         orderList.add(ord); 
@@ -329,10 +301,10 @@ public class dbHandler {
             }
             for(int i=0;i<orders.length;i++){
                 boolean flag=false;
-                String filter = "select completed from orders where order_id="+orders[i].getOrderID();
+                String filter = "select * from isComplete("+orders[i].getOrderID()+")";
                 rs=statement.executeQuery(filter);
                 while(rs.next()){
-                   flag=rs.getBoolean("completed");
+                   flag=rs.getBoolean("cmpl");
                 }
                 if(!flag){
                     fret.add(orders[i]);
@@ -351,10 +323,10 @@ public class dbHandler {
     public float getProductsPrice(String name) throws SQLException{
         connect();
         float price=0;
-        String selectString2 = "select price from products where product_name='"+name+"'";
+        String selectString2 = "select * from getPrice('"+name+"')";
         rs=statement.executeQuery(selectString2);
         while(rs.next()){
-            price=rs.getFloat("price");
+            price=rs.getFloat("getprice");
         }
         
         return price;
@@ -364,10 +336,10 @@ public class dbHandler {
     public int getBarcode(String name) throws SQLException{
         connect();
         int barcode=0;
-        String selectString2 = "select barcode from products where product_name='"+name+"'";
+        String selectString2 = "select * from getBarcode('"+name+"')";
         rs=statement.executeQuery(selectString2);
         while(rs.next()){
-            barcode=rs.getInt("barcode");
+            barcode=rs.getInt("getbarcode");
         }
         
         return barcode;
@@ -376,10 +348,14 @@ public class dbHandler {
     //Gets an integer and set the order_id with the same number to true that set the order as completed
     public int  OrderSetComplete(int id) throws SQLException{
         connect();
-        String SQL = "UPDATE orders SET completed=true where order_id=?";
-        statementIns= dbConnection.prepareStatement(SQL);
-        statementIns.setInt(1, id);
-        int affectedRows = statementIns.executeUpdate();
+        int affectedRows=0;
+        String SQL = "select * from completeOrder("+id+")";
+        rs=statement.executeQuery(SQL);
+        while(rs.next()){
+            if(rs.getBoolean("completeorder")){
+                affectedRows=1;
+            }
+        }
         
         return affectedRows;
     }
@@ -387,13 +363,16 @@ public class dbHandler {
     //Gets an order object and updates the ammount of products when the order completes (subtraction)
     public void UpdateProductsAfterOrderComplete(Orders ord) throws SQLException{
         connect();
-        String SQL = "update products set amount=(select amount from products where product_name=?)-? where product_name=?";
-        statementIns= dbConnection.prepareStatement(SQL);
+        int affectedRows=0;
         for(int i=0;i<ord.getProductList().size();i++){ 
-            statementIns.setString(1, ord.getProductList().get(i).getProductName());
-            statementIns.setInt(2, ord.getProductList().get(i).getProductAmount());
-            statementIns.setString(3, ord.getProductList().get(i).getProductName());
-            int affectedRows = statementIns.executeUpdate();
+            String SQL = "select * from completeOrderUpdateStock('"+ord.getProductList().get(i).getProductName()+"',"+ord.getProductList().get(i).getProductAmount()+")";
+            rs=statement.executeQuery(SQL);
+            System.out.println(SQL);
+            while(rs.next()){
+                if(rs.getBoolean("completeorderupdatestock")){
+                    affectedRows=1;
+                }
+            }
             if(affectedRows>0){ 
                  System.out.println("Stock update done rows affected"+affectedRows+"  In iteration "+i);
             }
