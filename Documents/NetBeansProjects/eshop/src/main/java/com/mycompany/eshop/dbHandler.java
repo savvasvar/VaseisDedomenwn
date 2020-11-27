@@ -282,75 +282,16 @@ public class dbHandler {
 
     
     //Returns an array of orders where orders with the same order_id are unified in one order
-    public Orders[] getOrders() throws SQLException{
+    public List<Order_View> getOrders() throws SQLException{
         connect();
-        int numOfOrders=0;
-        List<Orders> fret=new ArrayList();
-        String selectString = "select * from getMaxOrder();";
-        rs=statement.executeQuery(selectString);
-        while(rs.next()){
-            numOfOrders=rs.getInt("getmaxorder");
-        }
-        Orders[] orders=new Orders[numOfOrders];
-        for(int i=numOfOrders;i>0;i--){
-            
-                String dateMOD=null,custom=null;
-                var orderList=new ArrayList<Order>();
-                Orders order=new Orders();
-                order.setOrderID(i);
-                String getOrders = "select * from getorder("+i+")";
-                rs=statement.executeQuery(getOrders);
-                while(rs.next()){
-                        Order ord=new Order();
-                        int order_id=rs.getInt("orderid");
-                        ord.setOrderID(order_id);
-                        int product_amount=rs.getInt("mnt");
-                        ord.setProductAmount(product_amount);
-                        int customer=rs.getInt("cid");
-                        String cs=String.valueOf(customer);
-                        custom=cs;
-                        ord.setCustomer(cs);
-                        Date date=rs.getDate("timestamps");
-                        DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
-                        String strDate=dateFormat.format(date);
-                        dateMOD=strDate;
-                        ord.setDate(strDate);
-                        int product_name=rs.getInt("pid");
-                        String pname=String.valueOf(product_name);
-                        ord.setProductName(pname);
-                        orderList.add(ord); 
-                }
-                int cid=Integer.parseInt(custom);
-                order.setCustomer(getCustomerName(cid));
-                order.setDate(dateMOD);
-                for(int c=0;c<orderList.size();c++){
-                    int cID=Integer.parseInt(orderList.get(c).getCustomer());
-                    orderList.get(c).setCustomer(getCustomerName(cID));
-    //                System.out.println(getCustomerName(cID));
-                    int pID=Integer.parseInt(orderList.get(c).getProductName());
-                    orderList.get(c).setProductName(getProductName(pID));
-    //                System.out.println(getProductName(pID));
-                }
-                order.setProductList(orderList);
-                orders[i-1]=order;
-            }
-            for(int i=0;i<orders.length;i++){
-                boolean flag=false;
-                String filter = "select * from isComplete("+orders[i].getOrderID()+")";
-                rs=statement.executeQuery(filter);
-                while(rs.next()){
-                   flag=rs.getBoolean("cmpl");
-                }
-                if(!flag){
-                    fret.add(orders[i]);
-                }
-            }
-            Orders[] retArray=new Orders[fret.size()];
-            for(int i=0;i<fret.size();i++){
-                retArray[i]=fret.get(i);
-            }
-            
-        return retArray;
+        List<Order_View> kappa=new ArrayList<Order_View>();
+        String getOrders = "select * from getNotCompletedOrders();";
+        rs=statement.executeQuery(getOrders);
+         while(rs.next()){
+             Order_View ord=new Order_View(rs.getInt("or_id"),rs.getString("u_name"),rs.getString("dt"));
+             kappa.add(ord);
+         }  
+        return kappa;
     }
     
     

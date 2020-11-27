@@ -857,13 +857,14 @@ public class mainProgramGUI extends javax.swing.JFrame {
                 String proString[]=data[i].getProductString();
                 tblModel.addRow(proString);
             }
-//            Orders[] ord=db.getOrders();
-//            DefaultTableModel tblModel2=(DefaultTableModel) jTable2.getModel();
-//            for(int i=0;i<ord.length;i++){
+            List<Order_View> ord=db.getOrders();
+            DefaultTableModel tblModel2=(DefaultTableModel) jTable2.getModel();
+            for(int i=0;i<ord.size();i++){
+                
 //                ordersList.add(ord[i]);
 //                String[] ordString=ord[i].getOrdersString();
-//                tblModel2.addRow(ordString);
-//            }
+                tblModel2.addRow(ord.get(i).getOrderViewString());
+            }
             LogPanel[] log=db.getLogPanel();
             DefaultTableModel tblModellog=(DefaultTableModel) log_Table.getModel();
             for(int i=0;i<log.length;i++){
