@@ -398,54 +398,28 @@ public class dbHandler {
     //Gets strin name and inserts it to database
     public void addRole(String rname) throws SQLException{
         connect();
-        String SQL = "select * from addRole('New Role');";
+        String SQL = "select * from addRole('"+rname+"')";
         rs=statement.executeQuery(SQL);     
     }
     
     //Gets int integer of current posistion selected and copies the above's item name to current position and the name of curent item is set to the aboves value
-    public int ReOrderUP(int inp,String nf,String ns) throws SQLException{
-        int affectedRows=0;
+    public void ReOrder(int choice,int inp,String nf,String ns) throws SQLException{
         connect();
-        String SQL = "UPDATE roles SET role_name=? where role_id=?";
-        statementIns= dbConnection.prepareStatement(SQL);
-        statementIns.setString(1, nf);
-        statementIns.setInt(2, inp-1);
-        affectedRows = statementIns.executeUpdate();
-        System.out.println("\nRows "+affectedRows+" "+nf+" "+(inp-1));
-        statementIns.setString(1, ns);
-        statementIns.setInt(2, inp);
-        affectedRows = statementIns.executeUpdate();
-        System.out.println("\nRows "+affectedRows+" "+nf+" "+inp);
-
-        return affectedRows;    
+        String SQL = "select * from reOrder("+choice+","+inp+",'"+nf+"','"+ns+"')";
+        rs=statement.executeQuery(SQL);    
+        
     }
     
-    //Gets int integer of current posistion selected and copies the belows's item name to current position and the name of curent item is set to the belows value
-    public int ReOrderDown(int inp,String nf,String ns) throws SQLException{
-        int affectedRows=0;
-        connect();
-        String SQL = "UPDATE roles SET role_name=? where role_id=?";
-        statementIns= dbConnection.prepareStatement(SQL);
-        statementIns.setString(1, nf);
-        statementIns.setInt(2, inp+1);
-        affectedRows = statementIns.executeUpdate();
-        System.out.println("\nRows "+affectedRows+" "+nf+" "+(inp+1));
-        statementIns.setString(1, ns);
-        statementIns.setInt(2, inp);
-        affectedRows = statementIns.executeUpdate();
-        System.out.println("\nRows "+affectedRows+" "+ns+" "+inp);
-
-        return affectedRows;    
-    }
+  
     
     //Returns the array of roles 
     public String[] refresh() throws SQLException{
         connect();
         List<String> ord=new ArrayList<String>();
-        String selectString2 = "select role_name from roles order by role_id ASC";
+        String selectString2 = "select * from getRoles()";
         rs=statement.executeQuery(selectString2);
         while(rs.next()){ 
-            ord.add(rs.getString("role_name"));
+            ord.add(rs.getString("rname"));
 //            System.out.println(rs.getString("role_name"));
         }
         String[] ret=new String[ord.size()];
@@ -457,29 +431,25 @@ public class dbHandler {
     
     
     //Gets username and the desired role(role_id) and set it to the user
-    public int setRoleToUser(String user,int rid) throws SQLException{
+    public void setRoleToUser(String user,int rid) throws SQLException{
         connect();
-        String SQL = "UPDATE users SET role_id=? where username=?";
-        statementIns= dbConnection.prepareStatement(SQL);
-        statementIns.setInt(1, rid);
-        statementIns.setString(2, user);
-        int affectedRows = statementIns.executeUpdate();
-
-        return affectedRows;
+        String SQL = "select * from setRoleToUser("+rid+",'"+user+"')";
+        rs=statement.executeQuery(SQL);
     }
     
     
     //Retruns an array of LogPanel
-    public LogPanel[] getLogPanel() throws SQLException{
+    public List<LogPanel> getLogPanel() throws SQLException{
         connect();
-        int numOfLogPanel=0;
-        String selectString = "select count(*) from products_log_table";
-        rs=statement.executeQuery(selectString);
-        while(rs.next()){
-            numOfLogPanel=rs.getInt("count");
-        }
-        LogPanel[] data=new LogPanel[numOfLogPanel];
-        selectString="select * from products_log_table";
+        List<LogPanel> ret=new ArrayList<LogPanel>();
+//        int numOfLogPanel=0;
+//        String selectString = "select count(*) from products_log_table";
+//        rs=statement.executeQuery(selectString);
+//        while(rs.next()){
+//            numOfLogPanel=rs.getInt("count");
+//        }
+//        LogPanel[] data=new LogPanel[numOfLogPanel];
+        String selectString="select * from getLogs()";
         rs=statement.executeQuery(selectString);
         int i=0;
         while(rs.next()){
@@ -503,19 +473,16 @@ public class dbHandler {
             log.setPrice(price);
             log.setDescription(description);
             
-            data[i]=log;
+            ret.add(log);
             
             i++;  
         }
         
-        return data;
+        return ret;
     }
-    public int deleteSupplier(String name) throws SQLException{
+    public void deleteSupplier(String name) throws SQLException{
         connect();
-        String SQL = "DELETE from suppliers where sname=?";
-        statementIns= dbConnection.prepareStatement(SQL);
-        statementIns.setString(1, name);
-        int affectedRows = statementIns.executeUpdate();
-        return affectedRows;
+        String SQL = "select * from deleteSupplier('"+name+"')";
+        rs=statement.executeQuery(SQL);
     }
 }

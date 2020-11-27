@@ -707,10 +707,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         try {
             //sets role to user
-            int afR=db.setRoleToUser(jTextField1.getText(), jComboBox1.getSelectedIndex()+1);
-            if(afR>0){
-                System.out.println("done "+afR+" and index "+jComboBox1.getSelectedIndex()+1);
-            }
+            db.setRoleToUser(jTextField1.getText(), jComboBox1.getSelectedIndex()+1);
         } catch (SQLException ex) {
             Logger.getLogger(mainProgramGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -719,8 +716,12 @@ public class mainProgramGUI extends javax.swing.JFrame {
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         try {
             int pos=jList1.getSelectedIndex();
-//            System.out.println(jList1.getModel().getElementAt(pos)+" "+jList1.getModel().getElementAt(pos-1));
-            db.ReOrderUP(pos+1,jList1.getModel().getElementAt(pos),jList1.getModel().getElementAt(pos-1));
+            if(pos>0){
+                if(!(pos==jList1.getFirstVisibleIndex())){
+                db.ReOrder(0,pos+1,jList1.getModel().getElementAt(pos),jList1.getModel().getElementAt(pos-1));
+                }
+            }
+            
         } catch (SQLException ex) {
             Logger.getLogger(mainProgramGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -755,9 +756,14 @@ public class mainProgramGUI extends javax.swing.JFrame {
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         try {
             int pos=jList1.getSelectedIndex();
-            System.out.println(jList1.getModel().getElementAt(pos)+" "+jList1.getModel().getElementAt(pos+1));
-            System.out.println("Position "+(pos+1));
-            db.ReOrderDown(pos+1,jList1.getModel().getElementAt(pos),jList1.getModel().getElementAt(pos+1));
+            if(pos>0){
+                if(!(pos==jList1.getLastVisibleIndex())){
+                    System.out.println(jList1.getModel().getElementAt(pos)+" "+jList1.getModel().getElementAt(pos+1));
+                    System.out.println("Position "+(pos+1));
+                    db.ReOrder(1,pos+1,jList1.getModel().getElementAt(pos),jList1.getModel().getElementAt(pos+1));
+                }
+            }
+            
         } catch (SQLException ex) {
             Logger.getLogger(mainProgramGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -795,7 +801,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
         try {
             //Delete Supplier
-            int ret=db.deleteSupplier(jList2.getSelectedValue().toString());
+           db.deleteSupplier(jList2.getSelectedValue().toString());
             SuppListRefresh();
         } catch (SQLException ex) {
             Logger.getLogger(mainProgramGUI.class.getName()).log(Level.SEVERE, null, ex);
@@ -864,10 +870,10 @@ public class mainProgramGUI extends javax.swing.JFrame {
 //                String[] ordString=ord[i].getOrdersString();
                 tblModel2.addRow(ord.get(i).getOrderViewString());
             }
-            LogPanel[] log=db.getLogPanel();
+            List<LogPanel> log=db.getLogPanel();
             DefaultTableModel tblModellog=(DefaultTableModel) log_Table.getModel();
-            for(int i=0;i<log.length;i++){
-                String logString[]=log[i].getLogPanelString();
+            for(int i=0;i<log.size();i++){
+                String logString[]=log.get(i).getLogPanelString();
                 tblModellog.addRow(logString);
             }
         } catch (SQLException ex) {
