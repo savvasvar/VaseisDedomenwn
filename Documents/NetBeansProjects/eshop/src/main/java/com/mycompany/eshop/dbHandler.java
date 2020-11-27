@@ -359,64 +359,47 @@ public class dbHandler {
     public List<String> getSuppliers() throws SQLException{
         connect();
         List<String> ret=new ArrayList<String>();
-        String selectString2 = "select sname from suppliers order by sid ASC";
+        String selectString2 = "select * from getSuppliers()";
         rs=statement.executeQuery(selectString2);
         while(rs.next()){ 
-            ret.add(rs.getString("sname"));
+            ret.add(rs.getString("suppliers_name"));
         }
         return ret;
     }
     
     //Gets a string of supplier name and inserts it to the database
-    public int insertSupplier(String name) throws SQLException{
+    public void insertSupplier(String name) throws SQLException{
         connect();
-        String SQL = "INSERT INTO suppliers(sname) VALUES(?)";
-        statementIns= dbConnection.prepareStatement(SQL);
-        statementIns.setString(1, name);
-        int affectedRows = statementIns.executeUpdate();
-        return affectedRows;
+        String SQL = "select * from insertSupplier('"+name+"')";
+        rs=statement.executeQuery(SQL);
     }
     
     
     //Gets product current amount,new amount,product id and supplier id and restocks the product (sets new product amount)
-    public int reStock(int amount,int newAm,int pid,int sID) throws SQLException{
+    public void reStock(int amount,int newAm,int pid,int sID) throws SQLException{
         connect();
-        String SQL = "INSERT INTO restock(pid,amount,supplier) VALUES(?,?,?)";
-        statementIns= dbConnection.prepareStatement(SQL);
-        statementIns.setInt(1, pid);
-        statementIns.setInt(2, amount);
-        statementIns.setInt(3, sID);
-        int affectedRows = statementIns.executeUpdate();
-        String SQL1 = "UPDATE products SET amount=? where product_id=?";
-        statementIns= dbConnection.prepareStatement(SQL1);
-        statementIns.setInt(1, newAm);
-        statementIns.setInt(2, pid);
-        affectedRows = statementIns.executeUpdate();
-        return affectedRows;
+        String SQL = "select * from reStock("+amount+","+newAm+","+pid+","+sID+")";
+        rs=statement.executeQuery(SQL);
     }
     
     //Returns  a String List of user Roles
     public List<String> getRoles() throws SQLException{
         connect();
         List<String> ret=new ArrayList<String>();
-        String selectString2 = "select role_name from roles order by role_id ASC";
+        String selectString2 = "select * from getRoles()";
         rs=statement.executeQuery(selectString2);
         while(rs.next()){ 
-            ret.add(rs.getString("role_name"));
+            ret.add(rs.getString("rname"));
         }
 
         return ret;
     }
     
     //Gets strin name and inserts it to database
-    public int addRole(String rname) throws SQLException{
+    public void addRole(String rname) throws SQLException{
         connect();
-        String SQL = "INSERT INTO roles(role_name) VALUES(?)";
-        statementIns= dbConnection.prepareStatement(SQL);
-        statementIns.setString(1, rname);
-        int affectedRows = statementIns.executeUpdate();
-
-        return affectedRows;        
+        String SQL = "select * from addRole('New Role');";
+        rs=statement.executeQuery(SQL);     
     }
     
     //Gets int integer of current posistion selected and copies the above's item name to current position and the name of curent item is set to the aboves value

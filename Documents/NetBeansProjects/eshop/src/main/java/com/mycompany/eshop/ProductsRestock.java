@@ -202,11 +202,11 @@ public class ProductsRestock extends javax.swing.JFrame {
         int nAmV=Integer.parseInt(jTextField1.getText());
         int sumAm=oAm+nAmV;
         try {
-            int res=db.reStock(nAmV,sumAm,pid,sid);
-            System.out.println(res);
+            db.reStock(nAmV,sumAm,pid,sid);
         } catch (SQLException ex) {
             Logger.getLogger(ProductsRestock.class.getName()).log(Level.SEVERE, null, ex);
         }
+        this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

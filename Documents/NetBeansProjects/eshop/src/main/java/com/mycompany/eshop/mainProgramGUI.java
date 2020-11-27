@@ -736,8 +736,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
         List<String> ret=new ArrayList<String>();
         if(!jTextField2.getText().isEmpty()){
             try {
-                int r=db.addRole(jTextField2.getText());
-                if(r>0){
+                     db.addRole(jTextField2.getText());
                      ret=db.getRoles();
                      String[] listAr=new String[ret.size()];
                      for(int i=0;i<ret.size();i++){
@@ -746,7 +745,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
                     jList1.setListData(listAr);
                     jTextField2.setText(null);
                     rolesDropDownRefresh();
-                }
+                
             } catch (SQLException ex) {
                 Logger.getLogger(mainProgramGUI.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -783,7 +782,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         try {
             if(!jTextPane1.getText().isEmpty()){
-                int x=db.insertSupplier(jTextPane1.getText());
+                db.insertSupplier(jTextPane1.getText());
                 SuppListRefresh();
                 jTextPane1.setText("");
             }
