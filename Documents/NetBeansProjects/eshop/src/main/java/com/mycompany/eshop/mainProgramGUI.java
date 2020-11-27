@@ -618,6 +618,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
     }
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         TableDataHandler();
+        //EDO PREPEI NA GINEI FIX GIA NA EINAI PIO GRIGORO FORTONEI TA PANTA MAZI
         if(userInfo.getRoleId() == 1){ /**I activate the log panel only for admins*/
                 Panel.setVisible(true);
                 jTabbedPane1.setEnabledAt(3, true);
@@ -856,13 +857,13 @@ public class mainProgramGUI extends javax.swing.JFrame {
                 String proString[]=data[i].getProductString();
                 tblModel.addRow(proString);
             }
-            Orders[] ord=db.getOrders();
-            DefaultTableModel tblModel2=(DefaultTableModel) jTable2.getModel();
-            for(int i=0;i<ord.length;i++){
-                ordersList.add(ord[i]);
-                String[] ordString=ord[i].getOrdersString();
-                tblModel2.addRow(ordString);
-            }
+//            Orders[] ord=db.getOrders();
+//            DefaultTableModel tblModel2=(DefaultTableModel) jTable2.getModel();
+//            for(int i=0;i<ord.length;i++){
+//                ordersList.add(ord[i]);
+//                String[] ordString=ord[i].getOrdersString();
+//                tblModel2.addRow(ordString);
+//            }
             LogPanel[] log=db.getLogPanel();
             DefaultTableModel tblModellog=(DefaultTableModel) log_Table.getModel();
             for(int i=0;i<log.length;i++){

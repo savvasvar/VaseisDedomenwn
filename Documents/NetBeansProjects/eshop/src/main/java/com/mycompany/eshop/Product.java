@@ -56,12 +56,22 @@ public class Product {
         return description;
     }
     
+
+
     public String[] getProductString(){
         String id=String.valueOf(this.id);
         String barcode=String.valueOf(this.barcode);
         String amount=String.valueOf(this.amount);
         String price=String.valueOf(this.price);
         String[] data={id,name,barcode,amount,price,description};
+        return data;
+    }
+    
+    public String[] getProductForOrderString(){
+        String barcode=String.valueOf(this.barcode);
+        String amount=String.valueOf(this.amount);
+        String price=String.valueOf(this.price);
+        String[] data={name,barcode,price,amount};
         return data;
     }
 }

@@ -141,6 +141,7 @@ public class dbHandler {
         selectString="select * from getProducts()";
         rs=statement.executeQuery(selectString);
         int i=0;
+        
         while(rs.next()){
             int id=rs.getInt("product_id");
             String name=rs.getString("product_name");
@@ -163,6 +164,39 @@ public class dbHandler {
         }
         
         return data;
+    }
+    
+    public List<Product> getProductsByOrderID(int order_id) throws SQLException{
+        connect();
+        
+        List<Product> ret=new ArrayList<Product>();
+        String selectString="select * from getProductsByOrder(" + order_id + ")";
+        rs=statement.executeQuery(selectString);
+        int i=0;
+        
+        while(rs.next()){
+            int id=rs.getInt("product_id");
+            String name=rs.getString("product_name");
+            String description=rs.getString("description");
+            int amount=rs.getInt("amount");
+            float price=rs.getFloat("price");
+            int barcode=rs.getInt("barcode");
+            
+            Product pro=new Product();
+            pro.setName(name);
+            pro.setAmount(amount);
+            pro.setBarcode(barcode);
+            pro.setID(id);
+            pro.setPrice(price);
+            pro.setDescription(description);
+            
+            ret.add(pro);
+            System.out.println("Product testing " +pro.getName());
+            
+            i++;  
+        }
+        
+        return ret;
     }
     
     //Gets an integer which coresponds to filter type
@@ -219,6 +253,7 @@ public class dbHandler {
         }
         return ret;
     }
+    
     
     //Gets customer_id as an integer and returns Customer name string
     public String getCustomerName(int id) throws SQLException{
@@ -323,7 +358,7 @@ public class dbHandler {
     public float getProductsPrice(String name) throws SQLException{
         connect();
         float price=0;
-        String selectString2 = "select * from getPrice('"+name+"')";
+        String selectString2 = "select getPrice('"+name+"')";
         rs=statement.executeQuery(selectString2);
         while(rs.next()){
             price=rs.getFloat("getprice");
@@ -336,7 +371,7 @@ public class dbHandler {
     public int getBarcode(String name) throws SQLException{
         connect();
         int barcode=0;
-        String selectString2 = "select * from getBarcode('"+name+"')";
+        String selectString2 = "select getBarcode('"+name+"')";
         rs=statement.executeQuery(selectString2);
         while(rs.next()){
             barcode=rs.getInt("getbarcode");
@@ -349,7 +384,7 @@ public class dbHandler {
     public int  OrderSetComplete(int id) throws SQLException{
         connect();
         int affectedRows=0;
-        String SQL = "select * from completeOrder("+id+")";
+        String SQL = "select * from completeorder("+id+")";
         rs=statement.executeQuery(SQL);
         while(rs.next()){
             if(rs.getBoolean("completeorder")){
@@ -361,17 +396,16 @@ public class dbHandler {
     }
     
     //Gets an order object and updates the ammount of products when the order completes (subtraction)
-    public void UpdateProductsAfterOrderComplete(Orders ord) throws SQLException{
+    public void UpdateProductsAfterOrderComplete(List<Product> ord) throws SQLException{
         connect();
         int affectedRows=0;
-        for(int i=0;i<ord.getProductList().size();i++){ 
-            String SQL = "select * from completeOrderUpdateStock('"+ord.getProductList().get(i).getProductName()+"',"+ord.getProductList().get(i).getProductAmount()+")";
+        for(int i=0;i<ord.size();i++){ 
+            String SQL = "select * from completeOrderUpdateStock("+ord.get(i).getID()+","+ord.get(i).getAmount()+")";
             rs=statement.executeQuery(SQL);
-            System.out.println(SQL);
             while(rs.next()){
-                if(rs.getBoolean("completeorderupdatestock")){
-                    affectedRows=1;
-                }
+//                if(rs.getBoolean("completeorderupdatestock")){
+//                    affectedRows=1;
+//                }
             }
             if(affectedRows>0){ 
                  System.out.println("Stock update done rows affected"+affectedRows+"  In iteration "+i);

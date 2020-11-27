@@ -24,7 +24,9 @@ import org.vandeseer.easytable.structure.Row;
 import org.vandeseer.easytable.structure.Table;
 import org.vandeseer.easytable.structure.Table.TableBuilder;
 import org.vandeseer.easytable.structure.cell.TextCell;
-
+import com.mycompany.eshop.dbHandler;
+import java.util.ArrayList;
+import java.util.List;
 /**
  *
  * @author Thanasis
@@ -35,6 +37,9 @@ public class OrderDetails extends javax.swing.JFrame {
      * Creates new form OrderDetails
      */
     Orders ord = new Orders();
+    List<Product> _products = new ArrayList<Product>();
+
+    
     public OrderDetails() {
         initComponents();
         
@@ -160,10 +165,13 @@ public class OrderDetails extends javax.swing.JFrame {
             jLabel2.setText("Customer: "+this.ord.getCustomer());
             label1.setText("Date : "+this.ord.getDate());
             TableHandler();
+            
+            
         } catch (SQLException ex) {
             Logger.getLogger(OrderDetails.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_formWindowOpened
+
     private Table createHeader() {
           final TableBuilder tableBuilder0 = Table.builder()
                         .addColumnsOfWidth(150,250,250)
@@ -187,13 +195,13 @@ public class OrderDetails extends javax.swing.JFrame {
                                 .add(TextCell.builder().text("Amount").borderWidth(1).backgroundColor(Color.WHITE).build())
                                 .build());
                     float total=0;
-                    for(int i=0;i<ord.getProductList().size();i++){
-                        total+=ord.getProductList().get(i).getProductAmount()*db.getProductsPrice(ord.getProductList().get(i).getProductName());
+                    for(int i=0;i<_products.size();i++){
+                        total+=_products.get(i).getAmount()*_products.get(i).getPrice();
                         tableBuilder.addRow(Row.builder()
-                        .add(TextCell.builder().text(ord.getProductList().get(i).getProductName()+"").borderWidth(1).build())
-                        .add(TextCell.builder().text(db.getBarcode(ord.getProductList().get(i).getProductName())+"").borderWidth(1).build())
-                        .add(TextCell.builder().text( db.getProductsPrice(ord.getProductList().get(i).getProductName())+" €").borderWidth(1).build())
-                        .add(TextCell.builder().text(ord.getProductList().get(i).getProductAmount()+"").borderWidth(1).borderWidth(1).build())
+                        .add(TextCell.builder().text(_products.get(i).getName()+"").borderWidth(1).build())
+                        .add(TextCell.builder().text(_products.get(i).getBarcode()+"").borderWidth(1).build())
+                        .add(TextCell.builder().text( _products.get(i).getPrice()+" €").borderWidth(1).build())
+                        .add(TextCell.builder().text(_products.get(i).getAmount()+"").borderWidth(1).borderWidth(1).build())
                         .backgroundColor(Color.WHITE)
                         .build());
                     }
@@ -213,10 +221,11 @@ public class OrderDetails extends javax.swing.JFrame {
             if(res>0){
                 try {
                     TestUtils.createAndSaveDocumentWithTables("../"+ord.getOrderID()+"Order_."+ord.getDate()+".pdf", createHeader(),createTable(ord));
+                    TableHandler();
                 } catch (IOException ex) {
                     Logger.getLogger(OrderDetails.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                db.UpdateProductsAfterOrderComplete(ord);
+                db.UpdateProductsAfterOrderComplete(_products);
                 this.dispose();
             }
         } catch (SQLException ex) {
@@ -225,20 +234,22 @@ public class OrderDetails extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     public void TableHandler() throws SQLException{
+        System.out.println("Eimai edo "+ ord.getOrderID());
+        _products = db.getProductsByOrderID(ord.getOrderID());
+        
+        
         if(jTable1.getModel().getRowCount()!=0){
             DefaultTableModel model=(DefaultTableModel) jTable1.getModel();
             model.setRowCount(0);
         }
+        
         String ordStr[]=new String[ord.getProductList().size()];
         DefaultTableModel tblModel=(DefaultTableModel) jTable1.getModel();
-        for(int i=0;i<ord.getProductList().size();i++){
-            int barcode=db.getBarcode(ord.getProductList().get(i).getProductName());
-            String bcdStr=String.valueOf(barcode);
-            float price=db.getProductsPrice(ord.getProductList().get(i).getProductName());
-            String priceStr=String.valueOf(price);
-            String amount=String.valueOf(ord.getProductList().get(i).getProductAmount());
-            String[] row = {ord.getProductList().get(i).getProductName(),bcdStr,priceStr,amount};
-            tblModel.addRow(row);
+        
+        for(int i=0;i<_products.size();i++){
+            Product p = _products.get(i);
+//            System.out.println(p.getProductString());
+            tblModel.addRow(p.getProductForOrderString());
         }
     }
     /**
