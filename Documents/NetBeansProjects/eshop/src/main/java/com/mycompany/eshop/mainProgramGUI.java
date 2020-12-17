@@ -31,7 +31,7 @@ import javax.swing.table.TableColumn;
 public class mainProgramGUI extends javax.swing.JFrame {
     user userInfo=new user();
     dbHandler db=new dbHandler();
-    List<Orders> ordersList=new ArrayList<Orders>();
+    List<Order_View> ordersList=new ArrayList<Order_View>();
     
     /**
      * Creates new form mainProgramGUI
@@ -865,8 +865,7 @@ public class mainProgramGUI extends javax.swing.JFrame {
             List<Order_View> ord=db.getOrders();
             DefaultTableModel tblModel2=(DefaultTableModel) jTable2.getModel();
             for(int i=0;i<ord.size();i++){
-                
-//                ordersList.add(ord[i]);
+            ordersList.add(ord.get(i));
 //                String[] ordString=ord[i].getOrdersString();
                 tblModel2.addRow(ord.get(i).getOrderViewString());
             }

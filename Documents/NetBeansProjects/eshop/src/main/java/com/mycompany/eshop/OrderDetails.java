@@ -36,7 +36,7 @@ public class OrderDetails extends javax.swing.JFrame {
     /**
      * Creates new form OrderDetails
      */
-    Orders ord = new Orders();
+    Order_View ord = new Order_View();
     List<Product> _products = new ArrayList<Product>();
 
     
@@ -44,7 +44,7 @@ public class OrderDetails extends javax.swing.JFrame {
         initComponents();
         
     }
-    public void setOrder(Orders ord){
+    public void setOrder(Order_View ord){
         this.ord=ord;
     }
     /**
@@ -161,9 +161,9 @@ public class OrderDetails extends javax.swing.JFrame {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         try {
-            jLabel1.setText("Order ID: "+this.ord.getOrderID());
-            jLabel2.setText("Customer: "+this.ord.getCustomer());
-            label1.setText("Date : "+this.ord.getDate());
+            jLabel1.setText("Order ID: "+this.ord.or_id);
+            jLabel2.setText("Customer: "+this.ord.uname);
+            label1.setText("Date : "+this.ord.dt);
             TableHandler();
             
             
@@ -173,17 +173,18 @@ public class OrderDetails extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowOpened
 
     private Table createHeader() {
+        String date=ord.dt.substring(0,10);
           final TableBuilder tableBuilder0 = Table.builder()
                         .addColumnsOfWidth(150,250,250)
                         .padding(2)
                         .addRow(Row.builder()
-                                .add(TextCell.builder().text("Order ID: "+ord.getOrderID()).borderWidth(0).backgroundColor(Color.WHITE).build())
-                                .add(TextCell.builder().text("Customer Name: "+ord.getCustomer()).borderWidth(0).backgroundColor(Color.WHITE).build())
-                                .add(TextCell.builder().text("Order Date: "+ord.getDate()).borderWidth(0).backgroundColor(Color.WHITE).build())
+                                .add(TextCell.builder().text("Order ID: "+ord.or_id).borderWidth(0).backgroundColor(Color.WHITE).build())
+                                .add(TextCell.builder().text("Customer Name: "+ord.uname).borderWidth(0).backgroundColor(Color.WHITE).build())
+                                .add(TextCell.builder().text("Order Date: "+date).borderWidth(0).backgroundColor(Color.WHITE).build())
                                 .build());
           return tableBuilder0.build();
     }
-    private Table createTable(Orders ord) throws SQLException{
+    private Table createTable(Order_View ord) throws SQLException{
         final TableBuilder tableBuilder = Table.builder()
                             .addColumnsOfWidth(200,100,100,100);
 
@@ -217,10 +218,13 @@ public class OrderDetails extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
-            int res=db.OrderSetComplete(ord.getOrderID());
+            int res=db.OrderSetComplete(ord.or_id);
             if(res>0){
                 try {
-                    TestUtils.createAndSaveDocumentWithTables("../"+ord.getOrderID()+"Order_."+ord.getDate()+".pdf", createHeader(),createTable(ord));
+                    String date=ord.dt.substring(0, 10);
+                    System.out.println(date);
+                    String path="../"+ord.or_id+"Order_"+date+".pdf".replace(" ", "");
+                    TestUtils.createAndSaveDocumentWithTables(path, createHeader(),createTable(ord));
                     TableHandler();
                 } catch (IOException ex) {
                     Logger.getLogger(OrderDetails.class.getName()).log(Level.SEVERE, null, ex);
@@ -234,8 +238,8 @@ public class OrderDetails extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     public void TableHandler() throws SQLException{
-        System.out.println("Eimai edo "+ ord.getOrderID());
-        _products = db.getProductsByOrderID(ord.getOrderID());
+        System.out.println("Eimai edo "+ ord.or_id);
+        _products = db.getProductsByOrderID(ord.or_id);
         
         
         if(jTable1.getModel().getRowCount()!=0){
@@ -243,7 +247,7 @@ public class OrderDetails extends javax.swing.JFrame {
             model.setRowCount(0);
         }
         
-        String ordStr[]=new String[ord.getProductList().size()];
+//        String ordStr[]=new String[ord.getProductList().size()];
         DefaultTableModel tblModel=(DefaultTableModel) jTable1.getModel();
         
         for(int i=0;i<_products.size();i++){

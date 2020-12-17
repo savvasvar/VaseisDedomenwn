@@ -20,6 +20,7 @@ public class Order_View {
         this.uname=user;
         this.dt=date;
     }
+    public Order_View(){}
     public String[] getOrderViewString(){
         String or_id=String.valueOf(this.or_id);
         String[] data={or_id,this.uname,this.dt};
